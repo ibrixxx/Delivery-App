@@ -287,6 +287,30 @@
 				}
 				.container {
 				  padding: 16px;
+				  display: grid;
+				}
+				.prvi {
+					grid-column: 1;
+				}
+				.prvi2 {
+					grid-column: 2;
+				}
+				.zadnji {
+					grid-column: 1;
+				}
+				.zadnji2 {
+					grid-column: 2;
+				}
+				.ostalo {
+					grid-column-start: 1;
+					grid-column-end: 2;  
+				}
+				.ostalo2 {
+					grid-column-start: 1;
+					grid-column-end: 2;  
+				}
+				#btnl {
+					grid-column: 1;
 				}
 
 				/* Full-width input fields */
@@ -310,18 +334,21 @@
 				  margin-bottom: 25px;
 				}
 				b {
-					color: black;
+					color: gray;
+					font-size: 70%;
 				}
 
 				/* Set a style for the submit/register button */
 				.registerbtn {
 				  background-color: #4CAF50;
 				  color: white;
-				  padding: 16px 20px;
-				  margin: 8px 0;
+				  margin-left: 20px;
+				  margin-right: 0;
+				  margin-top: 12vh;
 				  border: none;
 				  cursor: pointer;
-				  width: 100%;
+				  width: 90%;
+				  height: 50%;
 				  opacity: 0.9;
 				}
 
@@ -435,27 +462,47 @@
 								<form action="">
 								  <div class="container">
 								    <hr>
-								    <label for="user"><b>Change Username</b></label>
-								    <input type="text" placeholder="Enter Email" name="user" id="email">
-								    <label for="email"><b>Change Email</b></label>
-								    <input type="text" placeholder="Enter Email" name="email" id="email">
-
+								    <div class="prvi">
+								    <label for="user"><b>Change Name</b></label>
+								    <input type="text" placeholder="Name" name="user" id="user">
+								    </div>
+								    <div class="prvi2">
+								    <label for="user2"><b>Change Surame</b></label>
+								    <input type="text" placeholder="Surname" name="user2" id="user2">
+								    </div>						
+								    <div class="prvi">
 								    <label for="psw"><b>Change Password</b></label>
 								    <input type="password" placeholder="Enter Password" name="psw" id="psw">
-
+									</div>
+									<div class="prvi2">
 								    <label for="psw-repeat"><b>Repeat Password</b></label>
 								    <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat">
-
-								    <label for="me"><b>Change Location</b></label>
-								    <button onclick="getLocation()">Use Current Location</button>
+								    </div>
+								    <div class="prvi">
+								    <label class="ostalo2" for="me"><b>Change Location</b></label>
+								    <button id="btnl" onclick="getLocation()">Use Current Location</button>
+								    </div>
+								    <div class="prvi">
 								    <input type="text" id="lat" class="cord" name="latitude" placeholder="latitude">
+									</div>
+									<div class="prvi2">
 								    <input type="text" id="long" class="cord" name="longitude" placeholder="longitude">
-
+									</div>
+								    <div class="zadnji">
 								    <label for="adrs"><b>Change Address</b></label>
 								    <input type="text" placeholder="Address" name="adrs" id="email">	
-
-								    <hr>
-								    <button type="submit" class="registerbtn">Save Changes</button>
+								    </div>
+								    <div class="zadnji2">
+								    <label for="flor"><b>Change Floor</b></label>
+								    <input type="text" placeholder="Apartment flor" name="flor" id="email">	
+								    </div>
+								    <div class="zadnji">
+								    <label for="email"><b>Change Email</b></label>
+								    <input type="text" placeholder="Enter Email" name="email" id="email">
+									</div>
+									<div class="zadnji2">
+								    <button type="submit" class="registerbtn zadnji2">Save Changes</button>
+									</div>
 								  </div>
 								 
 								</form>
