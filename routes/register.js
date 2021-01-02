@@ -6,7 +6,7 @@ var pg = require("pg");
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
     database: 'kdypkdwr', //env var: PGDATABASE
-    password: 'fRvdrdjOB4EvxSoSVkVTdA4EeBAAmvmX', //env var: PGPASSWORD
+    password: '-', //env var: PGPASSWORD
     host: 'kandula.db.elephantsql.com', // Server hosting the postgres database
     port: 5432, //env var: PGPORT
     max: 100, // max number of clients in the pool
