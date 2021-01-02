@@ -179,12 +179,6 @@ input::placeholder {
     width: 60vw;
     height: 14vh;
 }
-#ai {
-    padding: 2vh 4vw;
-    text-align: left;
-    color: #a180c4;
-    font-weight: bolder;
-}
 
 #lat, #lng {
     display: none;
