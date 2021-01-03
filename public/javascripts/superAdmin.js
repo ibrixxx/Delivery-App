@@ -100,3 +100,44 @@ function openCity(evt, cityName) {
 }
 
 document.getElementById("defaultOpen").click();
+
+
+function deleteRestaurant(id) {
+    $.ajax({
+        method: "POST",
+        url: "/super/delete/"+ id
+        })
+    let str = "#"+ id;
+    console.info(str);
+    $(str).hide('slow');
+}
+
+function deleteCity(id) {
+    $.ajax({
+        method: "POST",
+        url: "/super/delete/city/"+ id
+    })
+    let str = "#g"+ id;
+    console.info(str);
+    $(str).hide('slow');
+}
+
+function deleteFood(id) {
+    $.ajax({
+        method: "POST",
+        url: "/super/delete/food/"+ id
+    })
+    let str = "#h"+ id;
+    console.info(str);
+    $(str).hide('slow');
+}
+
+function addFood() {
+    $("#adde").show("slow");
+    $("#adde").hide("slow");
+}
+
+function addCity() {
+    $("#addexc").show("slow");
+    $("#addexc").hide("slow");
+}
