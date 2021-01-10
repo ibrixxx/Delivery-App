@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in</title>
+    <link rel="stylesheet" href="/stylesheets/login.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body class="text-center">
+
+<main class="form-signin">
+    <%if(users){%>
+        <form method="post" action="/login/user/auth">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <label for="inputEmail" class="visually-hidden">Email address</label>
+            <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+            <label for="inputPassword" class="visually-hidden">Password</label>
+            <input type="password" name="pswrd" id="inputPassword" class="form-control" placeholder="Password" required>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+            <p class="mt-5 mb-3 text-muted">Dont't have an account? </p><a href="/register/"><p class="mb-3 text-muted">Register</p></a>
+            <p class="mt-5 mb-3 text-muted">&copy; Ibrahim Mešan, 2021</p>
+        </form>
+    <%}%>
+    <%if(delv){%>
+        <form method="post" action="/login/delivery/auth">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <label for="inputEmail3" class="visually-hidden">Email address</label>
+            <input type="email" name="emd" id="inputEmail3" class="form-control" placeholder="Email address" required autofocus>
+            <label for="inputPassword3" class="visually-hidden">Password</label>
+            <input type="password" name="passd" id="inputPassword3" class="form-control" placeholder="Password" required>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+            <p class="mt-5 mb-3 text-muted">&copy; Ibrahim Mešan, 2021</p>
+        </form>
+    <%}%>
+    <%if(rest){%>
+        <form method="post" action="/login/restaurant/auth">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <label for="inputEmail2" class="visually-hidden">Email address</label>
+            <input type="email" name="emr" id="inputEmail2" class="form-control" placeholder="Email address" required autofocus>
+            <label for="inputPassword2" class="visually-hidden">Password</label>
+            <input type="password" name="psr" id="inputPassword2" class="form-control" placeholder="Password" required>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+            <p class="mt-5 mb-3 text-muted">&copy; Ibrahim Mešan, 2021</p>
+        </form>
+    <%}%>
+</main>
+
+</body>
+</html>
