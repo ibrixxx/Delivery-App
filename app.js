@@ -3,11 +3,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var jwt = require('jsonwebtoken');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var registerRouter = require('./routes/register');
 var superAdminRouter = require('./routes/super');
+var restaurantRouter = require('./routes/restoran');
+var loginRouter = require('./routes/login');
+var korisnikRouter = require('./routes/korisnikRouter');
+var deliveryRouter = require('./routes/delivery');
 
 var app = express();
 
@@ -22,10 +27,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+app.use('/super', superAdminRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
-app.use('/super', superAdminRouter);
+app.use('/restaurant', restaurantRouter);
+app.use('/login', loginRouter);
+app.use('/korisnik', korisnikRouter);
+app.use('/delivery', deliveryRouter);
+
 
 
 // catch 404 and forward to error handler
