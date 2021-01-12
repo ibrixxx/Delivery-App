@@ -4,7 +4,7 @@ var pg = require("pg");
 var config = {
   user: 'kdypkdwr', //env var: PGUSER
   database: 'kdypkdwr', //env var: PGDATABASE
-  password: '-', //env var: PGPASSWORD
+  password: 'fRvdrdjOB4EvxSoSVkVTdA4EeBAAmvmX', //env var: PGPASSWORD
   host: 'kandula.db.elephantsql.com', // Server hosting the postgres database
   port: 5432, //env var: PGPORT
   max: 100, // max number of clients in the pool
@@ -57,6 +57,26 @@ router.post('/delete/delivery/:id', function(req, res, next) {
       res.end('{"error":"Error","status":500 }');
     }
     client.query(`UPDATE dostavljac SET aktivan = false WHERE id = $1;`, [id], function (err, result){
+      done();
+      if(err){
+        console.info(id);
+        res.sendStatus(500);
+      }
+      else{
+        console.log(id);
+      }
+    });
+  });
+});
+
+
+router.post('/delete/article/:id', function(req, res, next) {
+  pool.connect(function (err, client, done){
+    let id = req.params.id;
+    if(err){
+      res.end('{"error":"Error","status":500 }');
+    }
+    client.query(`UPDATE artikli SET aktivan = false WHERE id = $1;`, [id], function (err, result){
       done();
       if(err){
         console.info(id);
