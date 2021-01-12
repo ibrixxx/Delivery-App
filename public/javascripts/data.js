@@ -33,3 +33,13 @@ function deleteDel(id) {
     console.info(str);
     $(str).hide('slow');
 }
+
+function deleteArt(id) {
+    $.ajax({
+        method: "POST",
+        url: "/users/delete/article/"+ id
+    })
+    let str = "#d"+ id;
+    console.info(str);
+    $(str).hide('slow');
+}
