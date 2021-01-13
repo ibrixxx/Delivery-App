@@ -19,10 +19,27 @@ var pool = new pg.Pool(config);
 router.get('/home', auth.restaurantAuth, function(req, res, next) {
     const token = req.cookies.restoran;
     let username;
+    let id;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         username = decodedToken.name;
+        id = decodedToken.id;
     });
-    res.render('resAdmin', {username: username});
+    pool.connect(function (err, client, done){
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM restoran WHERE id = $1`,
+            [id], function (err, result){
+                done();
+                if(err){
+                    res.sendStatus(500);
+                }
+                else{
+                    res.render('resAdmin', {username: username, data: result.rows});
+                }
+            });
+    });
+
 });
 
 
@@ -151,6 +168,36 @@ router.post('/menu', auth.restaurantAuth, function(req, res, next) {
                 console.log("dodano");
             }
         });
+    });
+});
+
+
+router.post('/edit', auth.restaurantAuth, function(req, res, next) {
+    let restID;
+    const token = req.cookies.restoran;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        restID = decodedToken.id;
+    });
+    pool.connect(function (err, client, done){
+        let naziv = req.body.namex, ime = req.body.surnamex, email = req.body.emailx,
+            ctg = req.body.categx;
+
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`UPDATE restoran SET naziv = $1, ime_admina = $2, email = $3, kategorija = $4,
+                        radi_od = $6, radi_do = $7 WHERE id = $5;`,
+            [naziv,ime,email,ctg,restID,req.body.fromx,req.body.to], function (err, result){
+                done();
+                if(err){
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                else{
+                    console.log("dodano");
+                    //res.ok();
+                }
+            });
     });
 });
 
