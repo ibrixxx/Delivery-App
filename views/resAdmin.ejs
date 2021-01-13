@@ -34,8 +34,41 @@
                                     <span class="close">&times;</span>
                                     <h2>Edit restaurant details</h2>
                                 </div>
-                                <div class="modal-body">
-                                    ...
+                                <div class="modal-body" style="color: darkgray">
+                                    <form class="row g-3" method="post" action="/restaurant/edit">
+                                        <div class="col-md-6">
+                                            <label for="inputName4" class="form-label">Restaurant Name</label>
+                                            <input type="text" class="form-control" placeholder="<%=data[0].naziv%>" value="<%=data[0].naziv%>" id="inputName4" name="namex">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="inputSName4" class="form-label">Admin Name</label>
+                                            <input type="text" class="form-control" placeholder="<%=data[0].ime_admina%>" value="<%=data[0].ime_admina%>" id="inputSName4" name="surnamex">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="inputEmail4" class="form-label">Email</label>
+                                            <input type="email" class="form-control" placeholder="<%=data[0].email%>" value="<%=data[0].email%>" id="inputEmail4" name="emailx">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Restaurant Category</label>
+                                            <select class="form-select" name="categx">
+                                                <option value="<%=data[0].kategorija%>"><%=data[0].kategorija%></option>
+                                                <option value="All">All</option>
+                                                <option value="Fast Food">Fast Food</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="inputFrom" class="form-label">Working From (h)</label>
+                                            <input type="time" class="form-control" id="inputFrom" name="fromx">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="inputTo" class="form-label">Working Till (h)</label>
+                                            <input type="time" class="form-control" id="inputTo" name="to">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Edit</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                     </a>
@@ -178,7 +211,7 @@
             </tr>
             <tr>
                 <td>
-                    <button class="dropdown-btn">Add group menu
+                    <button class="dropdown-btn">Add g100roup menu
                         <i class="fa fa-caret-down"></i>
                     </button>
                     <div class="dropdown-container">
@@ -233,7 +266,7 @@
             <tr>
                 <td>
                     <a href="/restaurant/data">
-                        <button style="width: 100%; height: 14vh">View articles
+                        <button style="width: 60vw; height: 14vh">View articles
                         </button>
                     </a>
                 </td>
