@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <title>Ponesi</title>
+    <link rel="stylesheet" href="/stylesheets/korisnik.css">
+</head>
+<body>
+<div class="grid-container">
+    <div id="bar" class="item1">
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#"><i class="fas fa-user-circle"></i> <%=username%></a>
+            <a href=""></a>
+            <a href="#">restaurants</a>
+            <button class="dropdown-btn">categories
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-container">
+                <%for(let i = 0; i<ctg.length; i++) {%>
+                    <a href="/korisnik/kategorija/:" +<%ctg[i].naziv%> ><%=ctg[i].naziv%></a>
+                <% }%>
+            </div>
+            <a href="#">history</a>
+            <a href="#"></a>
+            <a href="#"></a>
+            <table class="dodaci">
+                <tr>
+                    <td>
+                        <a id="myBtn" href="#">
+                            <i class="fas fa-user-edit"></i>
+                            <div id="myModal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <span class="close">&times;</span>
+                                        <h2>Edit user details</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="">
+                                            <div class="container">
+                                                <hr>
+                                                <div class="prvi">
+                                                    <label for="user"><b>Change Name</b></label>
+                                                    <input type="text" placeholder="<%=info[0].ime%>" name="user" id="user">
+                                                </div>
+                                                <div class="prvi2">
+                                                    <label for="user2"><b>Change Surame</b></label>
+                                                    <input type="text" placeholder="<%=info[0].prezime%>" name="user2" id="user2">
+                                                </div>
+                                                <div class="prvi">
+                                                    <label for="psw"><b>Change Password</b></label>
+                                                    <input type="password" placeholder="Enter Password" name="psw" id="psw">
+                                                </div>
+                                                <div class="prvi2">
+                                                    <label for="psw-repeat"><b>Repeat Password</b></label>
+                                                    <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat">
+                                                </div>
+                                                <div class="prvi">
+                                                    <label class="ostalo2" for="me"><b>Change Location</b></label>
+                                                    <button id="btnl" onclick="getLocation()">Use Current Location</button>
+                                                </div>
+                                                <div class="prvi">
+                                                    <input type="text" id="lat" class="cord" name="latitude" placeholder="<%=info[0].latituda%>">
+                                                </div>
+                                                <div class="prvi2">
+                                                    <input type="text" id="long" class="cord" name="longitude" placeholder="<%=info[0].longituda%>">
+                                                </div>
+                                                <div class="zadnji">
+                                                    <label for="adrs"><b>Change Address</b></label>
+                                                    <input type="text" placeholder="<%=info[0].adresa%>" name="adrs" id="email">
+                                                </div>
+                                                <div class="zadnji2">
+                                                    <label for="flor"><b>Change Floor</b></label>
+                                                    <input type="text" placeholder="<%=info[0].sprat%>" name="flor" id="email">
+                                                </div>
+                                                <div class="zadnji">
+                                                    <label for="email"><b>Change Email</b></label>
+                                                    <input type="text" placeholder="<%=info[0].email%>" name="email" id="email">
+                                                </div>
+                                                <div class="zadnji2">
+                                                    <button type="submit" class="registerbtn zadnji2">Save Changes</button>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/users/korisnik/logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Use any element to open the sidenav -->
+        <span id="menu" onclick="openNav()">&#9776;</span>
+    </div>
+    <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+    <div id="main" class="item2">
+        <form>
+            <input type="search" name="search" placeholder="search...">
+            <button id="lupa" type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+    <div id="main" class="item3">
+        <!-- Slideshow container -->
+        <div class="slideshow-container">
+
+            <!-- Full-width images with number and caption text -->
+            <div class="mySlides fade">
+                <%var imgsrc = 'data:image/jpg;base64,' + new Buffer(menu[0].img_data, 'binary').toString('base64');%>
+                <img  src="<%=imgsrc%>" >
+                <div class="text">
+                    <h4><%=menu[0].naziv%></h4>
+                    <p><%=menu[0].artikli%></p>
+                    <p style="font-weight: bold"><%=menu[0].cijena%> KM</p>
+                </div>
+            </div>
+
+            <div class="mySlides fade">
+                <img src="/images/default.jpg">
+                <div class="text">Caption Two</div>
+            </div>
+
+            <div class="mySlides fade">
+                <img src="/images/default.jpg">
+                <div class="text">Caption Three</div>
+            </div>
+
+            <!-- Next and previous buttons -->
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+        <br>
+
+        <!-- The dots/circles -->
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </div>
+    <div id="main" class="item5">
+        <h2>best sellers</h2>
+        <div class="row">
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc1 = 'data:image/jpg;base64,' + new Buffer(best[0].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc1%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=best[0].naziv%></h3>
+                        <%if(best[0].sastojci.length > 20) {%>
+                        <p><%=best[0].sastojci.slice(0, best[0].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(best[0].sastojci.length <= 20) {%>
+                        <p><%=best[0].sastojci%> </p>
+                        <%}%>
+                        <p><%=best[0].cijena%> KM</p>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc2 = 'data:image/jpg;base64,' + new Buffer(best[1].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc2%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=best[1].naziv%></h3>
+                        <%if(best[1].sastojci.length > 20) {%>
+                        <%let pom = best[1].sastojci.slice(0, best[1].sastojci.length / 3)%>
+                        <p><%=pom%>...</p>
+                        <%}%>
+                        <%if(best[1].sastojci.length <= 20) {%>
+                        <p><%=best[1].sastojci%> </p>
+                        <%}%>
+                        <p><%=best[1].cijena%> KM</p>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc3 = 'data:image/jpg;base64,' + new Buffer(best[2].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc3%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=best[2].naziv%></h3>
+                        <%if(best[2].sastojci.length > 20) {%>
+                        <p><%=best[2].sastojci.slice(0, best[2].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(best[2].sastojci.length <= 20) {%>
+                        <p><%=best[2].sastojci%> </p>
+                        <%}%>
+                        <p><%=best[2].cijena%> KM</p>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc4 = 'data:image/jpg;base64,' + new Buffer(best[3].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc4%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=best[3].naziv%></h3>
+                        <%if(best[3].sastojci.length > 20) {%>
+                            <p><%=best[3].sastojci.slice(0, best[3].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(best[3].sastojci.length <= 20) {%>
+                            <p><%=best[3].sastojci%> </p>
+                        <%}%>
+                        <p><%=best[3].cijena%> KM</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="main" class="item4">
+        <h2>best price</h2>
+        <div class="row">
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc5 = 'data:image/jpg;base64,' + new Buffer(action[0].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc5%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=action[0].naziv%></h3>
+                        <%if(action[0].sastojci.length > 20) {%>
+                        <p><%=action[0].sastojci.slice(0, action[0].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(action[0].sastojci.length <= 20) {%>
+                        <p><%=action[0].sastojci%> </p>
+                        <%}%>
+                        <p style="text-decoration: line-through;"><%=action[0].cijena%> KM</p>
+                        <p><%=action[0].cijena_akcija%> KM</p>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc6 = 'data:image/jpg;base64,' + new Buffer(action[1].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc6%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=action[1].naziv%></h3>
+                        <%if(action[1].sastojci.length > 20) {%>
+                        <p><%=action[1].sastojci.slice(0, action[1].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(action[1].sastojci.length <= 20) {%>
+                        <p><%=action[1].sastojci%> </p>
+                        <%}%>
+                        <p style="text-decoration: line-through;"><%=action[1].cijena%> KM</p>
+                        <p><%=action[1].cijena_akcija%> KM</p>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc7 = 'data:image/jpg;base64,' + new Buffer(action[2].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc7%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=action[2].naziv%></h3>
+                        <%if(action[2].sastojci.length > 20) {%>
+                        <p><%=action[2].sastojci.slice(0, action[2].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(action[2].sastojci.length <= 20) {%>
+                        <p><%=action[2].sastojci%> </p>
+                        <%}%>
+                        <p style="text-decoration: line-through;"><%=action[2].cijena%> KM</p>
+                        <p><%=action[2].cijena_akcija%> KM</p>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="#" style="text-decoration: none">
+                    <div class="card">
+                        <%var imgsrc8 = 'data:image/jpg;base64,' + new Buffer(action[3].img_data, 'binary').toString('base64');%>
+                        <img class="crds" src="<%=imgsrc8%>" onerror="this.src = '/images/default.jpg';">
+                        <h3><%=action[3].naziv%></h3>
+                        <%if(action[3].sastojci.length > 20) {%>
+                        <p><%=action[3].sastojci.slice(0, action[3].sastojci.length / 3)%>...</p>
+                        <%}%>
+                        <%if(action[3].sastojci.length <= 20) {%>
+                        <p><%=action[3].sastojci%> </p>
+                        <%}%>
+                        <p style="text-decoration: line-through;"><%=action[3].cijena%> KM</p>
+                        <p><%=action[3].cijena_akcija%> KM</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div id="main" class="item6">
+    <footer> <small>&copy; Copyright 2021, Ibrahim Mešan</small> </footer>
+</div>
+<script src="/javascripts/korisnik.js"></script>
+</body>
+</html>
