@@ -18,8 +18,8 @@ var pool = new pg.Pool(config);
 
 router.get('/home', auth.restaurantAuth, function(req, res, next) {
     const token = req.cookies.restoran;
-    let username;
-    let id;
+    let username = " ";
+    let id = 2;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         username = decodedToken.name;
         id = decodedToken.id;
@@ -28,10 +28,11 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`SELECT * FROM restoran WHERE id = $1`,
+        client.query(`SELECT * FROM restoran WHERE id = $1;`,
             [id], function (err, result){
                 done();
                 if(err){
+                    console.log(err);
                     res.sendStatus(500);
                 }
                 else{
@@ -39,7 +40,6 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
                 }
             });
     });
-
 });
 
 
@@ -133,6 +133,7 @@ router.post('/article', auth.restaurantAuth, function(req, res, next) {
                 }
                 else{
                     console.log(data);
+                    res.end();
                 }
             });
         }
