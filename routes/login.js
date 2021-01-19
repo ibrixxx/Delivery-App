@@ -15,8 +15,8 @@ var config = {
 var pool = new pg.Pool(config);
 
 const maxAge = 3*24*60*60;
-const createToken = (id, email) => {
-    return jwt.sign({id, email}, 'ibro super sicret', {
+const createToken = (id, email, name, city) => {
+    return jwt.sign({id, email, name, city}, 'ibro super sicret', {
         expiresIn: maxAge
     });
 }
@@ -44,7 +44,7 @@ router.post('/user/auth', function(req, res, next) {
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`SELECT id, lozinka FROM korisnik WHERE email = $1;`,
+        client.query(`SELECT id, lozinka, ime, grad FROM korisnik WHERE email = $1;`,
             [email], function (err, result){
                 done();
                 if(err){
@@ -57,6 +57,8 @@ router.post('/user/auth', function(req, res, next) {
                     const myPlaintextPassword = req.body.pswrd;
                     const hash = a[0].lozinka;
                     let user_id = a[0].id;
+                    let name = a[0].ime;
+                    let grad = a[0].grad;
                     bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
                         if(result){
                             pool.connect(function (err, client2, done){
@@ -71,7 +73,7 @@ router.post('/user/auth', function(req, res, next) {
                                             res.sendStatus(500);
                                         }
                                         else{
-                                            const token = createToken(user_id, email);
+                                            const token = createToken(user_id, email, name, grad);
                                             res.cookie('korisnik', token, {maxAge: maxAge*1000});
                                             res.redirect('/korisnik/home');
                                         }
@@ -96,7 +98,7 @@ router.post('/delivery/auth', function(req, res, next) {
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`SELECT id, lozinka FROM dostavljac WHERE email = $1;`,
+        client.query(`SELECT id, lozinka, ime, grad FROM dostavljac WHERE email = $1;`,
             [email], function (err, result){
                 done();
                 if(err){
@@ -109,6 +111,8 @@ router.post('/delivery/auth', function(req, res, next) {
                     const myPlaintextPassword = pass;
                     const hash = a[0].lozinka;
                     let user_id = a[0].id;
+                    const name = a[0].ime;
+                    let grad = a[0].grad;
                     bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
                         if(result){
                             pool.connect(function (err, client2, done){
@@ -123,7 +127,7 @@ router.post('/delivery/auth', function(req, res, next) {
                                             res.sendStatus(500);
                                         }
                                         else{
-                                            const token = createToken(user_id, email);
+                                            const token = createToken(user_id, email, name, grad);
                                             res.cookie('dostavljac', token, {maxAge: maxAge*1000});
                                             res.redirect('/delivery/home');
                                         }
@@ -148,7 +152,7 @@ router.post('/restaurant/auth', function(req, res, next) {
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`SELECT id, lozinka FROM restoran WHERE email = $1;`,
+        client.query(`SELECT id, lozinka, ime_admina, grad FROM restoran WHERE email = $1;`,
             [email], function (err, result){
                 done();
                 if(err){
@@ -161,6 +165,8 @@ router.post('/restaurant/auth', function(req, res, next) {
                     const myPlaintextPassword = pass;
                     const hash = a[0].lozinka;
                     let user_id = a[0].id;
+                    const name = a[0].ime_admina;
+                    let grad = a[0].grad;
                     bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
                         if(result){
                             pool.connect(function (err, client2, done){
@@ -175,7 +181,7 @@ router.post('/restaurant/auth', function(req, res, next) {
                                             res.sendStatus(500);
                                         }
                                         else{
-                                            const token = createToken(user_id, email);
+                                            const token = createToken(user_id, email, name, grad);
                                             res.cookie('restoran', token, {maxAge: maxAge*1000});
                                             res.redirect('/restaurant/home');
                                         }
