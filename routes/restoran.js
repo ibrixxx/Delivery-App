@@ -100,6 +100,7 @@ router.post('/article', auth.restaurantAuth, function(req, res, next) {
             cijena1 = req.body.price1, cijena2 = req.body.price2, datum1 = req.body.date1, datum2 = req.body.date2;
         cijena1 *= 1.0;
         cijena2 *= 1.0;
+        naziv.trim();
         let akcija;
         if(akc == "false")
             akcija = false;
