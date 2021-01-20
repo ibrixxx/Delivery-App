@@ -40,11 +40,9 @@
     transition: margin-left .5s;
     padding: 20px;
     background-color: transparent;
-    position: relative;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     text-align: center;
-    margin-left: 19vw;
-    align-self: center;
 }
 h1{
     top: 0;
@@ -206,6 +204,7 @@ input::placeholder {
     background-color: rgba(255,255,255,0.4);
     padding-left: 8px;
 }
+
 
 /* Optional: Style the caret down icon */
 .fa-caret-down {
