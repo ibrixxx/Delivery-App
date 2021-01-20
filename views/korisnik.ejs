@@ -14,6 +14,7 @@
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="#"><i class="fas fa-user-circle"></i> <%=username%></a>
             <a href=""></a>
+            <a href="/korisnik/menu">group menus</a>
             <a href="#">restaurants</a>
             <button class="dropdown-btn">categories
                 <i class="fa fa-caret-down"></i>
@@ -103,8 +104,8 @@
     </div>
     <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
     <div id="main" class="item2">
-        <form>
-            <input type="search" name="search" placeholder="search...">
+        <form method="post" action="/korisnik/search">
+            <input id="srch" type="search" name="searchx" placeholder="search...">
             <button id="lupa" type="submit"><i class="fa fa-search"></i></button>
         </form>
     </div>
@@ -145,6 +146,7 @@
             <span class="dot" onclick="currentSlide(2)"></span>
             <span class="dot" onclick="currentSlide(3)"></span>
         </div>
+
     </div>
     <div id="main" class="item5">
         <h2>best sellers</h2>
@@ -155,12 +157,7 @@
                         <%var imgsrc1 = 'data:image/jpg;base64,' + new Buffer(best[0].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc1%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[0].naziv%></h3>
-                        <%if(best[0].sastojci.length > 20) {%>
-                        <p><%=best[0].sastojci.slice(0, best[0].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(best[0].sastojci.length <= 20) {%>
                         <p><%=best[0].sastojci%> </p>
-                        <%}%>
                         <p><%=best[0].cijena%> KM</p>
                     </div>
                 </a>
@@ -171,13 +168,7 @@
                         <%var imgsrc2 = 'data:image/jpg;base64,' + new Buffer(best[1].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc2%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[1].naziv%></h3>
-                        <%if(best[1].sastojci.length > 20) {%>
-                        <%let pom = best[1].sastojci.slice(0, best[1].sastojci.length / 3)%>
-                        <p><%=pom%>...</p>
-                        <%}%>
-                        <%if(best[1].sastojci.length <= 20) {%>
                         <p><%=best[1].sastojci%> </p>
-                        <%}%>
                         <p><%=best[1].cijena%> KM</p>
                     </div>
                 </a>
@@ -188,12 +179,7 @@
                         <%var imgsrc3 = 'data:image/jpg;base64,' + new Buffer(best[2].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc3%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[2].naziv%></h3>
-                        <%if(best[2].sastojci.length > 20) {%>
-                        <p><%=best[2].sastojci.slice(0, best[2].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(best[2].sastojci.length <= 20) {%>
                         <p><%=best[2].sastojci%> </p>
-                        <%}%>
                         <p><%=best[2].cijena%> KM</p>
                     </div>
                 </a>
@@ -204,12 +190,7 @@
                         <%var imgsrc4 = 'data:image/jpg;base64,' + new Buffer(best[3].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc4%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[3].naziv%></h3>
-                        <%if(best[3].sastojci.length > 20) {%>
-                            <p><%=best[3].sastojci.slice(0, best[3].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(best[3].sastojci.length <= 20) {%>
                             <p><%=best[3].sastojci%> </p>
-                        <%}%>
                         <p><%=best[3].cijena%> KM</p>
                     </div>
                 </a>
@@ -217,7 +198,7 @@
         </div>
     </div>
     <div id="main" class="item4">
-        <h2>best price</h2>
+        <a href="/korisnik/onsale" style="text-decoration: none"><h2>best price</h2></a>
         <div class="row">
             <div class="column">
                 <a href="#" style="text-decoration: none">
@@ -225,12 +206,7 @@
                         <%var imgsrc5 = 'data:image/jpg;base64,' + new Buffer(action[0].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc5%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[0].naziv%></h3>
-                        <%if(action[0].sastojci.length > 20) {%>
-                        <p><%=action[0].sastojci.slice(0, action[0].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(action[0].sastojci.length <= 20) {%>
                         <p><%=action[0].sastojci%> </p>
-                        <%}%>
                         <p style="text-decoration: line-through;"><%=action[0].cijena%> KM</p>
                         <p><%=action[0].cijena_akcija%> KM</p>
                     </div>
@@ -242,12 +218,7 @@
                         <%var imgsrc6 = 'data:image/jpg;base64,' + new Buffer(action[1].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc6%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[1].naziv%></h3>
-                        <%if(action[1].sastojci.length > 20) {%>
-                        <p><%=action[1].sastojci.slice(0, action[1].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(action[1].sastojci.length <= 20) {%>
                         <p><%=action[1].sastojci%> </p>
-                        <%}%>
                         <p style="text-decoration: line-through;"><%=action[1].cijena%> KM</p>
                         <p><%=action[1].cijena_akcija%> KM</p>
                     </div>
@@ -259,12 +230,7 @@
                         <%var imgsrc7 = 'data:image/jpg;base64,' + new Buffer(action[2].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc7%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[2].naziv%></h3>
-                        <%if(action[2].sastojci.length > 20) {%>
-                        <p><%=action[2].sastojci.slice(0, action[2].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(action[2].sastojci.length <= 20) {%>
                         <p><%=action[2].sastojci%> </p>
-                        <%}%>
                         <p style="text-decoration: line-through;"><%=action[2].cijena%> KM</p>
                         <p><%=action[2].cijena_akcija%> KM</p>
                     </div>
@@ -276,12 +242,7 @@
                         <%var imgsrc8 = 'data:image/jpg;base64,' + new Buffer(action[3].img_data, 'binary').toString('base64');%>
                         <img class="crds" src="<%=imgsrc8%>" onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[3].naziv%></h3>
-                        <%if(action[3].sastojci.length > 20) {%>
-                        <p><%=action[3].sastojci.slice(0, action[3].sastojci.length / 3)%>...</p>
-                        <%}%>
-                        <%if(action[3].sastojci.length <= 20) {%>
                         <p><%=action[3].sastojci%> </p>
-                        <%}%>
                         <p style="text-decoration: line-through;"><%=action[3].cijena%> KM</p>
                         <p><%=action[3].cijena_akcija%> KM</p>
                     </div>
