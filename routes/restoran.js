@@ -25,6 +25,7 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
         id = decodedToken.id;
     });
     pool.connect(function (err, client, done){
+        let podaci = { };
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
@@ -36,7 +37,23 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    res.render('resAdmin', {username: username, data: result.rows});
+                    podaci = result.rows;
+                    pool.connect(function (err, client, done){
+                        if(err){
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result){
+                                done();
+                                if(err){
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                }
+                                else{
+                                    res.render('resAdmin', {username: username, data: podaci, ctg: result.rows});
+                                }
+                            });
+                    });
                 }
             });
     });
@@ -85,8 +102,15 @@ router.get('/data', auth.restaurantAuth, function(req, res, next) {
 
 
 router.post('/article', auth.restaurantAuth, function(req, res, next) {
-    let name = req.files.slika.name;
-    let data = req.files.slika.data;
+    let name = ' ';
+    let data;
+    if(req.files != null) {
+        name = req.files.slika.name;
+        data = req.files.slika.data;
+    }
+    else{
+        data = '/images/default.jpg';
+    }
     console.log(name);
     console.log(data);
     let restID;
@@ -134,7 +158,7 @@ router.post('/article', auth.restaurantAuth, function(req, res, next) {
                 }
                 else{
                     console.log(data);
-                    res.end();
+                    res.redirect('/restaurant/home');
                 }
             });
         }
