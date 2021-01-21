@@ -15,16 +15,16 @@
             <a href="#"><i class="fas fa-user-circle"></i> <%=username%></a>
             <a href=""></a>
             <a href="/korisnik/menu">group menus</a>
-            <a href="#">restaurants</a>
+            <a href="/korisnik/restorani">restaurants</a>
             <button class="dropdown-btn">categories
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-container">
                 <%for(let i = 0; i<ctg.length; i++) {%>
-                    <a href="/korisnik/kategorija/:" +<%ctg[i].naziv%> ><%=ctg[i].naziv%></a>
+                    <a href="/korisnik/category/<%=ctg[i].id%>"><%=ctg[i].naziv%></a>
                 <% }%>
             </div>
-            <a href="#">history</a>
+            <a href="/korisnik/history">history</a>
             <a href="#"></a>
             <a href="#"></a>
             <table class="dodaci">
@@ -116,7 +116,7 @@
             <!-- Full-width images with number and caption text -->
             <div class="mySlides fade">
                 <%var imgsrc = 'data:image/jpg;base64,' + new Buffer(menu[0].img_data, 'binary').toString('base64');%>
-                <img  src="<%=imgsrc%>" >
+                <img  src="<%=imgsrc%>" onerror="this.src = '/images/default.jpg';">
                 <div class="text">
                     <h4><%=menu[0].naziv%></h4>
                     <p><%=menu[0].artikli%></p>
@@ -155,7 +155,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc1 = 'data:image/jpg;base64,' + new Buffer(best[0].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc1%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc1%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[0].naziv%></h3>
                         <p><%=best[0].sastojci%> </p>
                         <p><%=best[0].cijena%> KM</p>
@@ -166,7 +166,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc2 = 'data:image/jpg;base64,' + new Buffer(best[1].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc2%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc2%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[1].naziv%></h3>
                         <p><%=best[1].sastojci%> </p>
                         <p><%=best[1].cijena%> KM</p>
@@ -177,7 +177,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc3 = 'data:image/jpg;base64,' + new Buffer(best[2].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc3%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc3%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[2].naziv%></h3>
                         <p><%=best[2].sastojci%> </p>
                         <p><%=best[2].cijena%> KM</p>
@@ -188,7 +188,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc4 = 'data:image/jpg;base64,' + new Buffer(best[3].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc4%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc4%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=best[3].naziv%></h3>
                             <p><%=best[3].sastojci%> </p>
                         <p><%=best[3].cijena%> KM</p>
@@ -204,7 +204,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc5 = 'data:image/jpg;base64,' + new Buffer(action[0].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc5%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc5%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[0].naziv%></h3>
                         <p><%=action[0].sastojci%> </p>
                         <p style="text-decoration: line-through;"><%=action[0].cijena%> KM</p>
@@ -216,7 +216,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc6 = 'data:image/jpg;base64,' + new Buffer(action[1].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc6%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc6%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[1].naziv%></h3>
                         <p><%=action[1].sastojci%> </p>
                         <p style="text-decoration: line-through;"><%=action[1].cijena%> KM</p>
@@ -228,7 +228,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc7 = 'data:image/jpg;base64,' + new Buffer(action[2].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc7%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc7%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[2].naziv%></h3>
                         <p><%=action[2].sastojci%> </p>
                         <p style="text-decoration: line-through;"><%=action[2].cijena%> KM</p>
@@ -240,7 +240,7 @@
                 <a href="#" style="text-decoration: none">
                     <div class="card">
                         <%var imgsrc8 = 'data:image/jpg;base64,' + new Buffer(action[3].img_data, 'binary').toString('base64');%>
-                        <img class="crds" src="<%=imgsrc8%>" onerror="this.src = '/images/default.jpg';">
+                        <img class="crds" src="<%=imgsrc8%>"  onerror="this.src = '/images/default.jpg';">
                         <h3><%=action[3].naziv%></h3>
                         <p><%=action[3].sastojci%> </p>
                         <p style="text-decoration: line-through;"><%=action[3].cijena%> KM</p>
