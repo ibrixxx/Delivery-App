@@ -33,8 +33,6 @@ router.get('/home', auth.userAuth,function(req, res, next) {
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
-        console.log(id);
-        console.log(grad);
         client.query(`SELECT * FROM korisnik WHERE id = $1;`,
             [id], function (err, result){
                 done();
@@ -48,7 +46,7 @@ router.get('/home', auth.userAuth,function(req, res, next) {
                         if(err){
                             res.end('{"error":"Error","status":500 }');
                         }
-                        client2.query(`SELECT * FROM kategorija_hrane_lkp;`,
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
                             [], function (err, result){
                                 done();
                                 if(err){
@@ -75,7 +73,8 @@ router.get('/home', auth.userAuth,function(req, res, next) {
                                                         if(err){
                                                             res.end('{"error":"Error","status":500 }');
                                                         }
-                                                        client4.query(`SELECT * FROM artikli a INNER JOIN restoran r on r.id = a.restoran_id
+                                                        client4.query(`SELECT a.naziv, r.naziv as sastojci, a.cijena, a.cijena_akcija, a.img_data 
+                                                        FROM artikli a INNER JOIN restoran r on r.id = a.restoran_id
                                                             WHERE r.grad = $1 AND a.akcija = true LIMIT 4; `,
                                                             [grad], function (err, result){
                                                                 done();
@@ -89,8 +88,8 @@ router.get('/home', auth.userAuth,function(req, res, next) {
                                                                         if(err){
                                                                             res.end('{"error":"Error","status":500 }');
                                                                         }
-                                                                        client5.query(`SELECT * FROM artikli a INNER JOIN 
-                                                                        restoran r on r.id = a.restoran_id WHERE r.grad = $1 
+                                                                        client5.query(`SELECT a.naziv, r.naziv as sastojci, a.cijena, a.broj_narudzbi, a.img_data
+                                                                         FROM artikli a INNER JOIN restoran r on r.id = a.restoran_id WHERE r.grad = $1 
                                                                         ORDER BY a.broj_narudzbi DESC LIMIT 4;`,
                                                                             [grad], function (err, result){
                                                                                 done();
@@ -116,5 +115,390 @@ router.get('/home', auth.userAuth,function(req, res, next) {
             });
     });
 });
+
+
+router.get('/onsale', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data FROM artikli a INNER JOIN 
+                                           restoran r on r.id = a.restoran_id WHERE r.grad = $1 AND a.akcija = true AND a.aktivan = true;`,
+                                            [grad], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    console.log(result.rows);
+                                                    res.render('artikli', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+router.post('/search', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        let item = req.body.searchx;
+        item = item.toLowerCase();
+        item = item.trim();
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data FROM artikli a INNER JOIN 
+                                           restoran r on r.id = a.restoran_id WHERE r.grad = $1 AND lower(a.naziv) LIKE $2 AND a.aktivan = true;`,
+                                            [grad, item], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    console.log(result.rows);
+                                                    res.render('artikli', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+router.get('/menu', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        let datum = new Date();
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT a.naziv, a.artikli, a.cijena, a.img_data, a.traje_do FROM grupni_meni a INNER JOIN 
+                                           restoran r on r.id = a.restoran_id WHERE r.grad = $1 AND a.traje_do > $2;`,
+                                            [grad, datum], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    console.log(result.rows);
+                                                    res.render('menu', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+
+router.get('/category/:ctg', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        let kategorija = req.params.ctg;
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data, a.kategorija FROM artikli a INNER JOIN 
+                                           restoran r on r.id = a.restoran_id WHERE r.grad = $1 AND a.kategorija = $2 AND a.aktivan = true;`,
+                                            [grad, kategorija], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    console.log(result.rows);
+                                                    res.render('artikli', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+router.get('/history', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT * FROM artikli a, orders o INNER JOIN 
+                                           restoran r on r.id = a.restoran_id WHERE r.grad = $1 AND o.artikal_id = a.id AND a.aktivan = true;`,
+                                            [grad], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    console.log(result.rows);
+                                                    res.render('artikli', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+router.get('/restorani', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT * FROM restoran WHERE grad = $1 AND aktivan = true;`,
+                                            [grad], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    console.log(result.rows);
+                                                    res.render('restorani', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
 
 module.exports = router;
