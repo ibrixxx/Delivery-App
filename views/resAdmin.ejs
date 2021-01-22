@@ -115,27 +115,34 @@
                             <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
                         </div>
                         <table>
-                            <tr>
+                            <%for(let i = 0; i<ord.length; i++) {%>
+                            <tr id="<%=ord[i].id%>">
                                 <td>
                                     <div class="card">
                                         <div class="jean">
-                                            <h3>name</h3>
-                                            <p>details...</p>
+                                            <%if(ord[i].artikal_id != 0) {%>
+                                            <h3>Article number: <%=ord[i].artikal_id%></h3>
+                                            <%}%>
+                                            <%if(ord[i].artikal_id == 0) {%>
+                                            <h3>Menu number: <%=ord[i].menu_id%></h3>
+                                            <%}%>
+                                            <p>Quantity: <%=ord[i].kvantitet%></p>
                                         </div>
                                         <form class="form-inline">
                                             <label class="labell" for="inlineFormCustomSelectPref">Assign to</label>
-                                            <select class="custom-select" id="inlineFormCustomSelectPref">
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <select name="dostavljac" class="custom-select" id="inlineFormCustomSelectPref">
+                                                <%for(let j = 0; j<dos.length; j++) {%>
+                                                    <option value="<%=dos[j].id%>"><%=dos[j].ime%> <%=dos[j].prezime%></option>
+                                                <%}%>
                                             </select>
                                         </form>
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="#"><i class="fas fa-check-circle c1"></i></a>
+                                    <i class="fas fa-check-circle c1" onclick="assignOrder(<%=ord[i].id%>)"></i>
                                 </td>
                             </tr>
+                            <%}%>
                         </table>
                     </div>
                 </td>
