@@ -106,7 +106,7 @@
     <div id = "main">
         <div class="card">
             <img id="lijevo" class="crds" src="<%='data:image/jpg;base64,' + new Buffer(art[0].img_data, 'binary').toString('base64')%>"  onerror="this.src = '/images/default.jpg';">
-            <form method="post" action="/korisnik/order/article/<%=art[0].id%>/<%=art[0].rid%>">
+            <form method="post" action="/korisnik/order/article/<%=art[0].id%>/<%=art[0].resid%>">
             <h2><%=art[0].naziv%></h2>
             <h3><%=art[0].restor%></h3>
             <h4><%=art[0].sastojci%></h4>
@@ -115,11 +115,11 @@
             </p>
             <p>
             <label>Payment methode</label>
-            <input type="radio" value="1"><label>Credit card</label>
-            <input type="radio" value="2"><label>On spot</label>
+            <input name="pla" type="radio" value="1"><label>Credit card</label>
+            <input name="nepl" type="radio" value="2"><label>On spot</label>
             </p>
             <label>Note: </label>
-            <textarea name="notes">More info about your order...</textarea>
+            <textarea name="notes">order details...</textarea>
 
             <%if(art[0].cijena_akcija == 0) {%>
                 <h4>Price <strong><%=art[0].cijena%> KM</strong></h4>
