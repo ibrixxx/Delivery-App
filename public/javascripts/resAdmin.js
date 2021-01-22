@@ -83,3 +83,14 @@ for (i = 0; i < dropdown.length; i++) {
         }
     });
 }
+
+function assignOrder(id) {
+    let op = $("#inlineFormCustomSelectPref").val();
+    $.ajax({
+        method: "POST",
+        url: "/restaurant/assign/order/"+ id +'/'+ op
+    })
+    let str = "#" + id;
+    console.info(str);
+    $(str).hide('slow');
+}
