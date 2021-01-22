@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <title>Ponesi</title>
+    <link rel="stylesheet" href="/stylesheets/order.css">
+</head>
+<body>
+<div class="grid-container">
+    <div id="bar" class="item1">
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/korisnik/home"><i class="fas fa-user-circle"></i> <%=username%></a>
+            <a href=""></a>
+            <a href="/korisnik/menu">group menus</a>
+            <a href="/korisnik/restorani">restaurants</a>
+            <button class="dropdown-btn">categories
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-container">
+                <%for(let i = 0; i<ctg.length; i++) {%>
+                <a href="/korisnik/category/<%=ctg[i].id%>"><%=ctg[i].naziv%></a>
+                <% }%>
+            </div>
+            <a href="/korisnik/history">history</a>
+            <a href="#"></a>
+            <a href="#"></a>
+            <table class="dodaci">
+                <tr>
+                    <td>
+                        <a id="myBtn" href="#">
+                            <i class="fas fa-user-edit"></i>
+                            <div id="myModal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <span class="close">&times;</span>
+                                        <h2>Edit user details</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="">
+                                            <div class="container">
+                                                <hr>
+                                                <div class="prvi">
+                                                    <label for="user"><b>Change Name</b></label>
+                                                    <input type="text" placeholder="<%=info[0].ime%>" name="user" id="user">
+                                                </div>
+                                                <div class="prvi2">
+                                                    <label for="user2"><b>Change Surame</b></label>
+                                                    <input type="text" placeholder="<%=info[0].prezime%>" name="user2" id="user2">
+                                                </div>
+                                                <div class="prvi">
+                                                    <label for="psw"><b>Change Password</b></label>
+                                                    <input type="password" placeholder="Enter Password" name="psw" id="psw">
+                                                </div>
+                                                <div class="prvi2">
+                                                    <label for="psw-repeat"><b>Repeat Password</b></label>
+                                                    <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat">
+                                                </div>
+                                                <div class="prvi">
+                                                    <label class="ostalo2" for="me"><b>Change Location</b></label>
+                                                    <button id="btnl" onclick="getLocation()">Use Current Location</button>
+                                                </div>
+                                                <div class="prvi">
+                                                    <input type="text" id="lat" class="cord" name="latitude" placeholder="<%=info[0].latituda%>">
+                                                </div>
+                                                <div class="prvi2">
+                                                    <input type="text" id="long" class="cord" name="longitude" placeholder="<%=info[0].longituda%>">
+                                                </div>
+                                                <div class="zadnji">
+                                                    <label for="adrs"><b>Change Address</b></label>
+                                                    <input type="text" placeholder="<%=info[0].adresa%>" name="adrs" id="email">
+                                                </div>
+                                                <div class="zadnji2">
+                                                    <label for="flor"><b>Change Floor</b></label>
+                                                    <input type="text" placeholder="<%=info[0].sprat%>" name="flor" id="email">
+                                                </div>
+                                                <div class="zadnji">
+                                                    <label for="email"><b>Change Email</b></label>
+                                                    <input type="text" placeholder="<%=info[0].email%>" name="email" id="email">
+                                                </div>
+                                                <div class="zadnji2">
+                                                    <button type="submit" class="registerbtn zadnji2">Save Changes</button>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/users/korisnik/logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Use any element to open the sidenav -->
+        <span id="menu" onclick="openNav()">&#9776;</span>
+    </div>
+    <div id = "main">
+        <div class="card">
+            <img id="lijevo" class="crds" src="<%='data:image/jpg;base64,' + new Buffer(art[0].img_data, 'binary').toString('base64')%>"  onerror="this.src = '/images/default.jpg';">
+            <form method="post" action="/korisnik/order/menu/<%=art[0].id%>/<%=art[0].resid%>">
+                <h2><%=art[0].naziv%></h2>
+                <h3><%=art[0].restor%></h3>
+                <h4><%=art[0].sastojci%></h4>
+                <p><label>Quantity</label>
+                    <input name="kol" type="number" min="1" step="1" value="1" placeholder="1">
+                </p>
+                <p>
+                    <label>Payment methode</label>
+                    <input name="pla" type="radio" value="1"><label>Credit card</label>
+                    <input name="nepl" type="radio" value="2"><label>On spot</label>
+                </p>
+                <label>Note: </label>
+                <textarea name="notes">order details...</textarea>
+
+                <h4>Price <strong><%=art[0].cijena%> KM</strong></h4>
+                <button class="button" type="submit">Order</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/javascripts/artikli.js"></script>
+</body>
+</html>
