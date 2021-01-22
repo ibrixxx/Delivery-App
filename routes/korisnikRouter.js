@@ -59,7 +59,7 @@ router.get('/home', auth.userAuth,function(req, res, next) {
                                         if(err){
                                             res.end('{"error":"Error","status":500 }');
                                         }
-                                        client3.query(`SELECT * FROM grupni_meni g INNER JOIN restoran r on r.id = g.restoran_id
+                                        client3.query(`SELECT g.naziv, g.artikli, g.id, g.cijena, r.id as re, g.img_data FROM grupni_meni g INNER JOIN restoran r on r.id = g.restoran_id
                                          WHERE r.grad = $1 LIMIT 3;`,
                                             [grad], function (err, result){
                                                 done();
@@ -415,7 +415,8 @@ router.get('/history', auth.userAuth,function(req, res, next) {
                                         if(err){
                                             res.end('{"error":"Error","status":500 }');
                                         }
-                                        client5.query(`SELECT * FROM artikli a, orders o WHERE o.artikal_id = a.id AND a.aktivan = true;`,
+                                        client5.query(`SELECT a.id, a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data, o.artikal_id
+                                         FROM artikli a, orders o WHERE o.artikal_id = a.id AND a.aktivan = true;`,
                                             [], function (err, result){
                                                 done();
                                                 if(err){
@@ -604,7 +605,7 @@ router.get('/artikal/:id', auth.userAuth,function(req, res, next) {
                                         if(err){
                                             res.end('{"error":"Error","status":500 }');
                                         }
-                                        client5.query(`SELECT a.id, a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data, r.naziv as restor, r.id as rid
+                                        client5.query(`SELECT a.id, a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data, r.naziv as restor, r.id as resid
                                           FROM artikli a, restoran r WHERE a.id = $1 AND r.id = a.restoran_id;`,
                                             [artikal], function (err, result){
                                                 done();
@@ -631,6 +632,10 @@ router.post('/order/article/:id/:re', auth.userAuth,function(req, res, next) {
     const token = req.cookies.korisnik;
     let username = " ";
     let id;
+    let r1 = req.body.pla;
+    let placeno = false;
+    if(r1)
+        placeno = true;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         username = decodedToken.name;
         grad = decodedToken.city;
@@ -645,9 +650,124 @@ router.post('/order/article/:id/:re', auth.userAuth,function(req, res, next) {
         if (err) {
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`insert into orders (restoran_id, korisnik_id, datum, artikal_id, kvantitet, napomena) 
-        values($1, $2, $3, $4, $5, $6);`,
-            [restoran, id, new Date(), artikal, qua, note], function (err, result) {
+        client.query(`insert into orders (restoran_id, korisnik_id, datum, artikal_id, kvantitet, napomena, placeno) 
+        values($1, $2, $3, $4, $5, $6, $7);`,
+            [restoran, id, new Date(), artikal, qua, note, placeno], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    pool.connect(function (err, client5, done){
+                        if(err){
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client5.query(`UPDATE artikli SET broj_narudzbi = broj_narudzbi + $2 WHERE id = $1;`,
+                            [artikal, qua], function (err, result){
+                                done();
+                                if(err){
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                }
+                                else{
+                                    res.redirect('/korisnik/home');
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+router.get('/menu/:id', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let grad;
+    let id;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let podaci = {};
+        let kateg = {};
+        let menu = req.params.id;
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM korisnik WHERE id = $1;`,
+            [id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    podaci = result.rows;
+                    pool.connect(function (err, client2, done) {
+                        if (err) {
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client2.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result) {
+                                done();
+                                if (err) {
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    kateg = result.rows;
+                                    pool.connect(function (err, client5, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client5.query(`SELECT g.id, g.naziv, g.artikli as sastojci, g.cijena, g.img_data, r.naziv as restor, r.id as resid
+                                          FROM grupni_meni g, restoran r WHERE g.id = $1 AND r.id = g.restoran_id;`,
+                                            [menu], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    res.render('groupOrder', {username: username, info: podaci, ctg: kateg, art: result.rows});
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+router.post('/order/menu/:id/:re', auth.userAuth,function(req, res, next) {
+    const token = req.cookies.korisnik;
+    let username = " ";
+    let id;
+    let r1 = req.body.pla;
+    let placeno = false;
+    if(r1)
+        placeno = true;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        grad = decodedToken.city;
+        id = decodedToken.id;
+    });
+    pool.connect(function (err, client, done) {
+        let menu = req.params.id;
+        let restoran = req.params.re;
+        let note = req.body.notes;
+        let qua = req.body.kol;
+        note = note.trim();
+        if (err) {
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`insert into orders (restoran_id, korisnik_id, datum, artikal_id, kvantitet, napomena, placeno, menu_id) 
+        values($1, $2, $3, $4, $5, $6, $7, $8);`,
+            [restoran, id, new Date(), 0, qua, note, placeno, menu], function (err, result) {
                 done();
                 if (err) {
                     console.log(err);
