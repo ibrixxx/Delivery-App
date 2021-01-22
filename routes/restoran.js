@@ -20,9 +20,11 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
     const token = req.cookies.restoran;
     let username = " ";
     let id = 2;
+    let grad;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         username = decodedToken.name;
         id = decodedToken.id;
+        grad = decodedToken.city;
     });
     pool.connect(function (err, client, done){
         let podaci = { };
@@ -50,7 +52,39 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
                                     res.sendStatus(500);
                                 }
                                 else{
-                                    res.render('resAdmin', {username: username, data: podaci, ctg: result.rows});
+                                    let kat = result.rows;
+                                    pool.connect(function (err, client, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client.query(`SELECT * FROM orders WHERE dostavljac_id is null AND dostavljeno = false AND restoran_id = $1;`,
+                                            [id], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    let order = result.rows;
+                                                    pool.connect(function (err, client, done){
+                                                        if(err){
+                                                            res.end('{"error":"Error","status":500 }');
+                                                        }
+                                                        client.query(`SELECT * FROM dostavljac WHERE logovan = true AND grad = $1;`,
+                                                            [grad], function (err, result){
+                                                                done();
+                                                                if(err){
+                                                                    console.log(err);
+                                                                    res.sendStatus(500);
+                                                                }
+                                                                else{
+                                                                    res.render('resAdmin', {username: username, data: podaci, ctg: kat, ord: order, dos: result.rows});
+                                                                }
+                                                            });
+                                                    });
+                                                }
+                                            });
+                                    });
                                 }
                             });
                     });
@@ -222,6 +256,33 @@ router.post('/edit', auth.restaurantAuth, function(req, res, next) {
                 else{
                     console.log("dodano");
                     //res.ok();
+                }
+            });
+    });
+});
+
+
+router.post('/assign/order/:id/:dostavljac', auth.restaurantAuth, function(req, res, next) {
+    let restID;
+    const token = req.cookies.restoran;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        restID = decodedToken.id;
+    });
+    pool.connect(function (err, client, done){
+        let dos = req.params.dostavljac;
+        let ord = req.params.id;
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`UPDATE orders SET dostavljac_id = $1 WHERE id = $2;`,
+            [dos, ord], function (err, result){
+                done();
+                if(err){
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                else{
+                    console.log("dodano");
                 }
             });
     });
