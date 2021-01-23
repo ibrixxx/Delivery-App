@@ -52,3 +52,24 @@ window.onclick = function(event) {
         modal2.style.display = "none";
     }
 }
+
+
+function confirmDelivery(id) {
+    $.ajax({
+        method: "POST",
+        url: "/delivery/confirm/order/"+id
+    })
+    let str = "#" + id;
+    console.info(str);
+    $(str).hide('slow');
+}
+
+function abortMission(id) {
+    $.ajax({
+        method: "POST",
+        url: "/delivery/abort/order/"+id
+    })
+    let str = "#" + id;
+    console.info(str);
+    $(str).hide('slow');
+}
