@@ -100,9 +100,24 @@ router.get('/restaurant/logout',function(req, res, next) {
   res.redirect('/');
 });
 
-router.get('/delivery/logout',function(req, res, next) {
+router.get('/delivery/logout/:id',function(req, res, next) {
   res.clearCookie('dostavljac');
-  res.redirect('/');
+  pool.connect(function (err, client, done){
+    let id = req.params.id;
+    if(err){
+      res.end('{"error":"Error","status":500 }');
+    }
+    client.query(`UPDATE dostavljac SET logovan = false WHERE id = $1;`, [id], function (err, result){
+      done();
+      if(err){
+        console.info(id);
+        res.sendStatus(500);
+      }
+      else{
+        res.redirect('/');
+      }
+    });
+  });
 });
 
 
