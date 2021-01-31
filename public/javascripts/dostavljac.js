@@ -73,3 +73,45 @@ function abortMission(id) {
     console.info(str);
     $(str).hide('slow');
 }
+
+
+
+let chatForm = document.getElementById("chat-form");
+let chatBox = document.querySelector('.chat-box');
+let a = document.getElementById('boxbox');
+
+var socket = io.connect('ws://localhost:3000');
+socket.on('poruka', (p,username) => {
+    outputMessage(p, username);
+    chatBox.scrollTop = chatBox.scrollHeight;
+})
+
+chatForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const mes = e.target.elements.salji.value;
+    console.log(mes);
+    socket.emit('chatMes', mes);
+    e.target.elements.salji.value = '';
+})
+
+function outputMessage(mes, username) {
+    let div = document.createElement('div');
+    div.classList.add('media');
+    div.classList.add('w-50');
+    div.classList.add('mb-3');
+    div.classList.add('ml-auto');
+    div.classList.add('mine');
+    div.innerHTML = `<div class="media-body">
+         <div class="bg-primary rounded pymine-2 px-3 mb-2 row">
+            <p class="text-small mb-0 text-white">${mes}</p>
+            </div>
+            <p class="small text-muted">${username} | ${new Date().getDay()}/${new Date().getDate()} @${new Date().getHours()}:${new Date().getMinutes()}</p></div>`;
+    let tr = document.createElement('tr');
+    let td = document.createElement('td');
+    td.appendChild(div);
+    tr.appendChild(td);
+    let tab = document.getElementById('tabla');
+    tab.appendChild(tr);
+    chatBox.appendChild(tab);
+    a.appendChild(chatBox);
+}
