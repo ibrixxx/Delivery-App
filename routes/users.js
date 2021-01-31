@@ -17,7 +17,7 @@ router.get('/data', function(req, res, next) {
   let usr = {};
   pool.connect(function (err, client, done){
     if(err){
-      console.log('ewe');
+      //console.log('ewe');
       res.end('{"error":"Error","status":500 }');
     }
     client.query('SELECT * FROM dostavljac;', [], function (err, result){
@@ -59,11 +59,11 @@ router.post('/delete/delivery/:id', function(req, res, next) {
     client.query(`UPDATE dostavljac SET aktivan = false WHERE id = $1;`, [id], function (err, result){
       done();
       if(err){
-        console.info(id);
+        //console.info(id);
         res.sendStatus(500);
       }
       else{
-        console.log(id);
+        //console.log(id);
       }
     });
   });
@@ -79,12 +79,12 @@ router.post('/delete/article/:id', function(req, res, next) {
     client.query(`UPDATE artikli SET aktivan = false WHERE id = $1;`, [id], function (err, result){
       done();
       if(err){
-        console.info(id);
+        //console.info(id);
         res.sendStatus(500);
       }
-      else{
-        console.log(id);
-      }
+      //else{
+        //console.log(id);
+      //}
     });
   });
 });
@@ -101,16 +101,16 @@ router.get('/restaurant/logout',function(req, res, next) {
 });
 
 router.get('/delivery/logout/:id',function(req, res, next) {
+  let id = req.params.id;
   res.clearCookie('dostavljac');
   pool.connect(function (err, client, done){
-    let id = req.params.id;
     if(err){
       res.end('{"error":"Error","status":500 }');
     }
     client.query(`UPDATE dostavljac SET logovan = false WHERE id = $1;`, [id], function (err, result){
       done();
       if(err){
-        console.info(id);
+        //console.info(id);
         res.sendStatus(500);
       }
       else{
