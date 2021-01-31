@@ -6,7 +6,7 @@ var pg = require("pg");
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
     database: 'kdypkdwr', //env var: PGDATABASE
-    password: '-', //env var: PGPASSWORD
+    password: 'fRvdrdjOB4EvxSoSVkVTdA4EeBAAmvmX', //env var: PGPASSWORD
     host: 'kandula.db.elephantsql.com', // Server hosting the postgres database
     port: 5432, //env var: PGPORT
     max: 100, // max number of clients in the pool
@@ -16,7 +16,7 @@ var pool = new pg.Pool(config);
 
 
 router.get('/', function(req, res, next) {
-    res.render('register', { title: 'Express'});
+    res.render('register');
 });
 
 /* GET home page. */
@@ -38,13 +38,13 @@ router.post('/user', function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    res.send("Tabela je ažurirana");
+                    res.redirect('/login/user');
                 }
             });
         });
-        console.log(pass);
-        console.log(lat);
-        console.log(lng);
+        //console.log(pass);
+        // console.log(lat);
+        // console.log(lng);
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
@@ -71,13 +71,13 @@ router.post('/restaurant', function(req, res, next) {
                         res.sendStatus(500);
                     }
                     else{
-                        res.send("Tabela je ažurirana");
+                        res.redirect('/login/restaurant');
                     }
                 });
         });
-        console.log(pass);
-        console.log(lat);
-        console.log(lng);
+        // console.log(pass);
+        // console.log(lat);
+        // console.log(lng);
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
@@ -98,16 +98,16 @@ router.post('/delivery', function(req, res, next) {
                 [name, surname, email, hash, cityy], function (err, result){
                     done();
                     if(err){
-                        console.log(cityy);
-                        console.log(name);
-                        console.log(email);
-                        console.log(hash);
+                        // console.log(cityy);
+                        // console.log(name);
+                        // console.log(email);
+                        // console.log(hash);
 
                         console.log(err);
                         res.sendStatus(500);
                     }
                     else{
-                        res.send("Tabela je ažurirana");
+                        res.redirect('/super/');
                     }
                 });
         });
