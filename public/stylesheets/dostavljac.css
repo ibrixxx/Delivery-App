@@ -200,7 +200,7 @@ input::placeholder {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding: 10px;
     width: 55vw;
-    height: 17vh;
+    min-height: 14vh;
     text-align: center;
     justify-content: center;
     background-color: #a180c4;
