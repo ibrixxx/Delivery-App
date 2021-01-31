@@ -38,7 +38,7 @@ router.get('/restaurant', function(req, res, next) {
 
 router.post('/user/auth', function(req, res, next) {
     let email = req.body.inputEmail;
-    console.log(email);
+    //console.log(email);
     pool.connect(function (err, client, done){
         let pass = req.body.pswrd;
         if(err){
@@ -52,7 +52,7 @@ router.post('/user/auth', function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    console.log(pass);
+                    //console.log(pass);
                     let a = result.rows;
                     const myPlaintextPassword = req.body.pswrd;
                     const hash = a[0].lozinka;
@@ -92,13 +92,13 @@ router.post('/user/auth', function(req, res, next) {
 
 router.post('/delivery/auth', function(req, res, next) {
     let email = req.body.emd;
-    console.log(email);
+    //console.log(email);
     pool.connect(function (err, client, done){
         let pass = req.body.passd;
         if(err){
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`SELECT id, lozinka, ime, grad FROM dostavljac WHERE email = $1;`,
+        client.query(`SELECT id, lozinka, prezime, grad FROM dostavljac WHERE email = $1;`,
             [email], function (err, result){
                 done();
                 if(err){
@@ -106,12 +106,12 @@ router.post('/delivery/auth', function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    console.log(pass);
+                    //console.log(pass);
                     let a = result.rows;
                     const myPlaintextPassword = pass;
                     const hash = a[0].lozinka;
                     let user_id = a[0].id;
-                    const name = a[0].ime;
+                    const name = a[0].prezime;
                     let grad = a[0].grad;
                     bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
                         if(result){
@@ -146,7 +146,7 @@ router.post('/delivery/auth', function(req, res, next) {
 
 router.post('/restaurant/auth', function(req, res, next) {
     let email = req.body.emr;
-    console.log(email);
+    //console.log(email);
     pool.connect(function (err, client, done){
         let pass = req.body.psr;
         if(err){
@@ -160,7 +160,7 @@ router.post('/restaurant/auth', function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    console.log(pass);
+                    //console.log(pass);
                     let a = result.rows;
                     const myPlaintextPassword = pass;
                     const hash = a[0].lozinka;
