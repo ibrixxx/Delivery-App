@@ -4,15 +4,13 @@ var pg = require("pg");
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
     database: 'kdypkdwr', //env var: PGDATABASE
-    password: '-', //env var: PGPASSWORD
+    password: 'fRvdrdjOB4EvxSoSVkVTdA4EeBAAmvmX', //env var: PGPASSWORD
     host: 'kandula.db.elephantsql.com', // Server hosting the postgres database
     port: 5432, //env var: PGPORT
     max: 100, // max number of clients in the pool
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 var pool = new pg.Pool(config);
-var pool2 = new pg.Pool(config);
-var pool3 = new pg.Pool(config);
 
 router.get('/', function(req, res, next) {
     let rest = {};
@@ -29,7 +27,7 @@ router.get('/', function(req, res, next) {
             }
             else{
                 rest = result.rows;
-                pool2.connect(function (err, client2, done){
+                pool.connect(function (err, client2, done){
                     if(err){
                         res.end('{"error":"Error","status":500 }');
                     }
@@ -41,7 +39,7 @@ router.get('/', function(req, res, next) {
                         }
                         else{
                             g = result.rows;
-                            pool3.connect(function (err, client3, done){
+                            pool.connect(function (err, client3, done){
                                 if(err){
                                     res.end('{"error":"Error","status":500 }');
                                 }
@@ -64,6 +62,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
+
 router.post('/delete/:id', function(req, res, next) {
     pool.connect(function (err, client, done){
         let id = req.params.id;
@@ -76,9 +75,9 @@ router.post('/delete/:id', function(req, res, next) {
                 console.info(id);
                 res.sendStatus(500);
             }
-            else{
-                console.log(id);
-            }
+            //else{
+            //    console.log(id);
+            //}
         });
     });
 });
@@ -95,9 +94,9 @@ router.post('/delete/city/:id', function(req, res, next) {
                 console.info(id);
                 res.sendStatus(500);
             }
-            else{
-                console.log(id);
-            }
+            //else{
+            //    console.log(id);
+            //}
         });
     });
 });
@@ -114,9 +113,9 @@ router.post('/delete/food/:id', function(req, res, next) {
                 console.info(id);
                 res.sendStatus(500);
             }
-            else{
-                console.log(id);
-            }
+            //else{
+            //    console.log(id);
+            //}
         });
     });
 });
@@ -134,9 +133,9 @@ router.post('/addFood', function(req, res, next) {
                     console.log(err);
                     res.sendStatus(500);
                 }
-                else{
-                    console.log(fname);
-                }
+                //else{
+                //    console.log(fname);
+                //}
             });
     });
 });
@@ -154,9 +153,9 @@ router.post('/addCity', function(req, res, next) {
                     console.log(err);
                     res.sendStatus(500);
                 }
-                else{
-                    console.log(fname);
-                }
+                // else{
+                //
+                // }
             });
     });
 });
