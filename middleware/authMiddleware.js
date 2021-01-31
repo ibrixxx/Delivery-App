@@ -9,7 +9,7 @@ const userAuth = (req, res, next) => {
                 res.redirect('/login/user');
             }
             else {
-                console.log(decodedToken);
+                //console.log(decodedToken);
                 next();
             }
         })
@@ -28,7 +28,7 @@ const deliveryAuth = (req, res, next) => {
                 res.redirect('/login/delivery');
             }
             else {
-                console.log(decodedToken);
+                //console.log(decodedToken);
                 next();
             }
         })
@@ -47,7 +47,7 @@ const restaurantAuth = (req, res, next) => {
                 res.redirect('/login/restaurant');
             }
             else {
-                console.log(decodedToken);
+                //console.log(decodedToken);
                 next();
             }
         })
