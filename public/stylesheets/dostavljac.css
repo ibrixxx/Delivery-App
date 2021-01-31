@@ -40,9 +40,9 @@
     transition: margin-left .5s;
     padding: 20px;
     background-color: transparent;
-    position: relative;
+    display: grid;
+    place-items: center;
     text-align: center;
-    margin-left: 15vw;
 }
 h1{
     top: 0;
@@ -222,4 +222,37 @@ input::placeholder {
 }
 .c2:hover {
     color: #a32a2a;
+}
+
+#tabla {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.data {
+    display: grid;
+    overflow: hidden;
+}
+
+.data h4, h6 {
+    font-size: 3vmin;
+}
+
+.data1 {
+    float: left;
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 3vmin;
+}
+.data2 {
+    place-items: center;
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 3vmin;
+}
+.data3 {
+    float: right;
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 3vmin;
 }
