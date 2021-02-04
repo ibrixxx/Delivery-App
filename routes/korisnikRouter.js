@@ -193,7 +193,7 @@ router.post('/search', auth.userAuth,function(req, res, next) {
     pool.connect(function (err, client, done) {
         let podaci = {};
         let kateg = {};
-        let item = req.body.searchx;
+        let item = '%'+req.body.searchx+'%';
         item = item.toLowerCase();
         item = item.trim();
         if (err) {
