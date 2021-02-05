@@ -37,13 +37,20 @@
         </div>
         <div class="col-md-6">
             <label for="inputCity" class="form-label">City</label>
-            <input type="text" class="form-control" id="inputCity" name="cityy">
+            <select id="inputState" class="form-select" name="cityy">
+                <%for(let i = 0; i<gradovi.length; i++) {%>
+                    <option value="<%=gradovi[i].naziv%>"><%=gradovi[i].naziv%></option>
+                <%}%>
+            </select>
         </div>
         <div class="col-md-6">
             <label for="inputState" class="form-label">State</label>
             <select id="inputState" class="form-select" name="cntry">
                 <option selected>Choose...</option>
                 <option value="Bosna">Bosna</option>
+                <option value="Srbija">Srbija</option>
+                <option value="Hrvatska">Hrvatska</option>
+                <option value="Crna Gora">Crna Gora</option>
             </select>
         </div>
         <div class="col-12">
@@ -62,6 +69,6 @@
     </form>
 </div>
 <script src="/javascripts/register.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=...=myMap"></script>
+<script src=<%=key%>></script>
 </body>
 </html>
