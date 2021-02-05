@@ -16,7 +16,22 @@ var pool = new pg.Pool(config);
 
 
 router.get('/', function(req, res, next) {
-    res.render('register');
+    const apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=myMap";
+    pool.connect(function (err, client, done){
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`select * from grad_lkp;`, [], function (err, result){
+            done();
+            if(err){
+                console.info(err);
+                res.sendStatus(500);
+            }
+            else{
+                res.render('register', {key: apiKey, gradovi: result.rows});
+            }
+        });
+    });
 });
 
 /* GET home page. */
