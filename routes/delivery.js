@@ -45,7 +45,7 @@ router.get('/home', auth.deliveryAuth, function(req, res, next) {
         }
         client.query(`SELECT o.placeno, o.kvantitet, a.naziv as artNaziv, k.ime, k.prezime,
                     k.adresa, k.sprat, r.naziv as resNaziv, a.cijena, a.cijena_akcija,
-                     gm.naziv as menuNaziv, gm.cijena as cGm, gm.id as flag
+                     gm.naziv as menuNaziv, gm.cijena as cGm, gm.id as flag, k.latituda, k.longituda
                     FROM orders o
                     INNER JOIN artikli a on a.id = o.artikal_id
                     INNER JOIN korisnik k on k.id = o.korisnik_id
@@ -84,7 +84,8 @@ router.get('/home', auth.deliveryAuth, function(req, res, next) {
                                             })
                                         });
                                     }
-                                    res.render('dostavljac', {username: username, data: ord, dos: result.rows, ajdi: id, ime: ''});
+                                    let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                    res.render('dostavljac', {key: apiKey, username: username, data: ord, dos: result.rows, ajdi: id, ime: ''});
                                 }
                             });
                     });
@@ -145,7 +146,8 @@ router.get('/chat/:name', auth.deliveryAuth, function(req, res, next) {
                                             })
                                         });
                                     }
-                                    res.render('dostavljac', {username: username, data: ord, dos: result.rows, ajdi: id, ime: ime_sagovornika});
+                                    let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                    res.render('dostavljac', {key: apiKey, username: username, data: ord, dos: result.rows, ajdi: id, ime: ime_sagovornika});
                                 }
                             });
                     });
