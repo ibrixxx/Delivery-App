@@ -115,3 +115,37 @@ function outputMessage(mes, username) {
     chatBox.appendChild(tab);
     a.appendChild(chatBox);
 }
+
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 	43.856430, lng: 18.413029 },
+        zoom: 6,
+    });
+    populateMap();
+}
+
+function addMarker(ime, prezime, sprat, adr,lt, ln) {
+    let marker;
+    marker = new google.maps.Marker({
+        position: {lat: lt, lng: ln},
+        map,
+        icon: null,
+    });
+
+    let info = new google.maps.InfoWindow({
+        content: `<h5>ordered by: ${ime} ${prezime}</h5> <p>address: ${adr} | floor: ${sprat}</p>`
+    });
+
+    marker.addListener('click', function () {
+        info.open(map, marker);
+    });
+}
+
+function populateMap() {
+    let pom = document.getElementById('markeri').innerHTML;
+    let a = JSON.parse(pom);
+    for(let i = 0; i<a.length; i++) {
+        addMarker(a[i].ime, a[i].prezime, a[i].sprat, a[i].adresa, a[i].latituda, a[i].longituda);
+    }
+}
