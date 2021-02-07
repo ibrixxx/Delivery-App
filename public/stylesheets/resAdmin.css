@@ -270,3 +270,9 @@ input::placeholder {
     background: orange;
     color: white;
 }
+
+
+#map {
+    height: 400px;
+    width: 100%;
+}
