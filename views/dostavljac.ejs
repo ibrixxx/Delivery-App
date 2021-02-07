@@ -33,10 +33,11 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <span class="close">&times;</span>
-                                    <h2>Map ?</h2>
+                                    <h2>Map</h2>
                                 </div>
-                                <div class="modal-body">
-                                    ...
+                                <div class="modal-body" style="color: #5a4d6e">
+									<div id="map" style="height: 400px; width: 100%;"></div>
+									<p id="markeri" style="display: none"><%=JSON.stringify(data)%></p>
                                 </div>
                             </div>
                     </a>
@@ -242,6 +243,10 @@
 				</span>
 
 </div>
+<script
+		src="<%=key%>"
+		async
+></script>
 <script src="/socket.io/socket.io.js"></script>
 <%if(ime == '') {%>
 <script src="/javascripts/dostavljac.js"></script><%}%>
