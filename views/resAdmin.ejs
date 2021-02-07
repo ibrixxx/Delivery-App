@@ -83,10 +83,30 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <span class="close">&times;</span>
-                                    <h2>Map ?</h2>
+                                    <h2>Map</h2>
                                 </div>
-                                <div class="modal-body">
-                                    ...
+                                <div class="modal-body" style="color: #5a4d6e">
+                                    <form style="padding-bottom: 1em" class="row g-3" method="post" action="/restaurant/filter/map">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Date</label>
+                                            <input type="date" class="form-control" name="dan">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Delivery person</label>
+                                            <select name="mapDost" class="custom-select">
+                                                <option value="-1">All</option>
+                                                <%for(let j = 0; j<dos.length; j++) {%>
+                                                    <option value="<%=dos[j].id%>"><%=dos[j].ime%> <%=dos[j].prezime%></option>
+                                                <%}%>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label"></label>
+                                            <button type="submit" class="btn-primary form-control">Filter</button>
+                                        </div>
+                                    </form>
+                                    <div id="map"></div>
+                                    <p id="markeri" style="display: none"><%=mapa%></p>
                                 </div>
                             </div>
                     </a>
@@ -102,11 +122,21 @@
         <table>
             <tr>
                 <td>
+                    <%if(ord.length != 0) {%>
                     <button class="dropdown-btn notification">
                         Assign orders
-                        <span class="badge">3</span>
+                        <span id="brod" class="badge"><%=ord.length%></span>
                         <i class="fa fa-caret-down"></i>
                     </button>
+                    <%}%>
+                    <%if(ord.length == 0) {%>
+                        <button class="dropdown-btn">
+                            Assign orders
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    <%}%>
+
+
                     <div class="dropdown-container">
                         <div id="ai" class="form-check">
                             <label class="form-check-label" for="defaultCheck1">
@@ -385,6 +415,16 @@
 				</span>
 
 </div>
+<script
+        src="<%=key%>"
+        async
+></script>
+<script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/resAdmin.js"></script>
+<%if(otv) {%>
+    <script>
+        document.getElementById('myBtn').click();
+    </script>
+<%}%>
 </body>
 </html>
