@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 const auth = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
-var fileUpload = require('express-fileupload');
 var pg = require("pg");
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
@@ -78,7 +77,30 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
                                                                     res.sendStatus(500);
                                                                 }
                                                                 else{
-                                                                    res.render('resAdmin', {username: username, data: podaci, ctg: kat, ord: order, dos: result.rows});
+                                                                    let dos = result.rows;
+                                                                    pool.connect(function (err, client, done){
+                                                                        let da = new Date();
+                                                                        let datum = `${da.getUTCFullYear()}-${da.getUTCMonth() + 1}-${da.getUTCDate()}`;
+                                                                        if(err){
+                                                                            res.end('{"error":"Error","status":500 }');
+                                                                        }
+                                                                        client.query(`select o.dostavljeno, o.placeno, d.ime, d.prezime, k.latituda, k.longituda from orders o
+                                                                                        inner join korisnik k on k.id = o.korisnik_id
+                                                                                        inner join dostavljac d on d.id = o.dostavljac_id
+                                                                                        WHERE restoran_id = $1 and o.datum = $2;`,
+                                                                            [id, datum], function (err, result){
+                                                                                done();
+                                                                                if(err){
+                                                                                    console.log(err);
+                                                                                    res.sendStatus(500);
+                                                                                }
+                                                                                else{
+                                                                                    let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                                                                    let mapa = result.rows;
+                                                                                    res.render('resAdmin', {key: apiKey, username: username, data: podaci, ctg: kat, ord: order, dos: dos, mapa: JSON.stringify(mapa), otv: false});
+                                                                                }
+                                                                            });
+                                                                    });
                                                                 }
                                                             });
                                                     });
@@ -92,6 +114,155 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
             });
     });
 });
+
+
+
+router.post('/filter/map', auth.restaurantAuth, function(req, res, next) {
+    const token = req.cookies.restoran;
+    let username = " ";
+    let id = 2;
+    let grad;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        username = decodedToken.name;
+        id = decodedToken.id;
+        grad = decodedToken.city;
+    });
+    let dostavljacc = req.body.mapDost;
+    console.log(dostavljacc);
+    pool.connect(function (err, client, done){
+        let podaci = { };
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`SELECT * FROM restoran WHERE id = $1;`,
+            [id], function (err, result){
+                done();
+                if(err){
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                else{
+                    podaci = result.rows;
+                    pool.connect(function (err, client, done){
+                        if(err){
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client.query(`SELECT * FROM kategorija_hrane_lkp WHERE aktivan = true;`,
+                            [], function (err, result){
+                                done();
+                                if(err){
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                }
+                                else{
+                                    let kat = result.rows;
+                                    pool.connect(function (err, client, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client.query(`SELECT * FROM orders WHERE dostavljac_id is null AND dostavljeno = false AND restoran_id = $1;`,
+                                            [id], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    let order = result.rows;
+                                                    pool.connect(function (err, client, done){
+                                                        if(err){
+                                                            res.end('{"error":"Error","status":500 }');
+                                                        }
+                                                        client.query(`SELECT * FROM dostavljac WHERE logovan = true AND grad = $1;`,
+                                                            [grad], function (err, result){
+                                                                done();
+                                                                if(err){
+                                                                    console.log(err);
+                                                                    res.sendStatus(500);
+                                                                }
+                                                                else{
+                                                                    let dos = result.rows;
+                                                                    pool.connect(function (err, client, done) {
+                                                                        let da = req.body.dan;
+                                                                        console.log(da);
+                                                                        let datum = da;
+                                                                        if(da == 0) {
+                                                                            da = new Date();
+                                                                            datum = `${da.getUTCFullYear()}-${da.getUTCMonth() + 1}-${da.getUTCDate()}`;
+                                                                        }//console.log(datum);
+                                                                        if (err) {
+                                                                            res.end('{"error":"Error","status":500 }');
+                                                                        }
+                                                                        if (dostavljacc == -1) {
+                                                                            client.query(`select o.dostavljeno, o.placeno, d.ime, d.prezime, k.latituda, k.longituda from orders o
+                                                                                        inner join korisnik k on k.id = o.korisnik_id
+                                                                                        inner join dostavljac d on d.id = o.dostavljac_id
+                                                                                        WHERE restoran_id = $1 and o.datum = $2;`,
+                                                                                [id, datum], function (err, result) {
+                                                                                    done();
+                                                                                    if (err) {
+                                                                                        console.log(err);
+                                                                                        res.sendStatus(500);
+                                                                                    } else {
+                                                                                        let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                                                                        let mapa = result.rows;
+                                                                                        console.log(mapa);
+                                                                                        res.render('resAdmin', {
+                                                                                            key: apiKey,
+                                                                                            username: username,
+                                                                                            data: podaci,
+                                                                                            ctg: kat,
+                                                                                            ord: order,
+                                                                                            dos: dos,
+                                                                                            mapa: JSON.stringify(mapa),
+                                                                                            otv: true
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                        }
+                                                                        else {
+                                                                            client.query(`select o.dostavljeno, o.placeno, d.ime, d.prezime, k.latituda, k.longituda from orders o
+                                                                                        inner join korisnik k on k.id = o.korisnik_id
+                                                                                        inner join dostavljac d on d.id = o.dostavljac_id
+                                                                                        WHERE restoran_id = $1 and o.datum = $2 and o.dostavljac_id = $3;`,
+                                                                                [id, datum, dostavljacc], function (err, result) {
+                                                                                    done();
+                                                                                    if (err) {
+                                                                                        console.log(err);
+                                                                                        res.sendStatus(500);
+                                                                                    } else {
+                                                                                        let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                                                                        let mapa = result.rows;
+                                                                                        console.log(mapa);
+                                                                                        res.render('resAdmin', {
+                                                                                            key: apiKey,
+                                                                                            username: username,
+                                                                                            data: podaci,
+                                                                                            ctg: kat,
+                                                                                            ord: order,
+                                                                                            dos: dos,
+                                                                                            mapa: JSON.stringify(mapa),
+                                                                                            otv: true
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                    });
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
 
 
 router.get('/data', auth.restaurantAuth, function(req, res, next) {
