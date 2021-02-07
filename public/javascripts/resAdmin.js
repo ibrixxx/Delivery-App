@@ -93,4 +93,51 @@ function assignOrder(id) {
     let str = "#" + id;
     console.info(str);
     $(str).hide('slow');
+    let a = document.getElementById('brod').innerText;
+    a--;
+    if(a == 0)
+        document.getElementById('brod').style.display = 'none';
+    document.getElementById('brod').innerText = a;
+}
+
+let map;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 	43.856430, lng: 18.413029 },
+        zoom: 6,
+    });
+    populateMap();
+}
+
+function addMarker(ime,prezime,pl, lt, ln, dos) {
+    let marker;
+    if(!dos)
+        marker = new google.maps.Marker({
+            position: {lat: lt, lng: ln},
+            map,
+            icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+        });
+    else
+        marker = new google.maps.Marker({
+            position: {lat: lt, lng: ln},
+            map,
+            icon: null,
+        });
+
+    let info = new google.maps.InfoWindow({
+        content: `<h5>assaigned to: ${ime} ${prezime}</h5> <p>paid: ${pl} | delivered: ${dos}</p>`
+    });
+
+    marker.addListener('click', function () {
+        info.open(map, marker);
+    });
+}
+
+function populateMap() {
+    let pom = document.getElementById('markeri').innerHTML;
+    let a = JSON.parse(pom);
+    for(let i = 0; i<a.length; i++) {
+        addMarker(a[i].ime, a[i].prezime, a[i].placeno, a[i].latituda, a[i].longituda, a[i].dostavljeno);
+    }
 }
