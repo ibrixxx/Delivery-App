@@ -98,17 +98,20 @@
     max-width: 1000px;
     position: relative;
     margin: auto;
+
 }
 body {
     background-color: #74EBD5;
     background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
-
     min-height: 100vh;
 }
 
 /* Hide the images by default */
 .mySlides {
     display: none;
+}
+.mySlides img {
+    height: 60vh;
 }
 
 /* Next & previous buttons */
@@ -416,4 +419,13 @@ input.cord {
 footer {
     padding: 5vh;
     color: gray;
+}
+
+h2 {
+    color: whitesmoke;
+    font-style: oblique;
+}
+
+h2:hover {
+    color: blueviolet;
 }
