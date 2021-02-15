@@ -167,6 +167,7 @@ body {
     display: flex;
     flex-direction: row;
     max-height: 24vh;
+    max-width: 70vw;
     height: 18vh;
     color: #f5f5f5;
     font-style: oblique;
