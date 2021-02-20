@@ -113,7 +113,11 @@
                 </td>
             </tr>
         </table>
-
+        <a style="position: absolute; bottom: 10px" href="#">
+            <form method="post" action="/restaurant/report">
+                <button style="border: solid #9FACE6; border-radius: 25px; background-color: rgba(67, 22, 115, 0.5); color: whitesmoke" type="submit"><i class="fas fa-mail-bulk"></i> Send report</button>
+            </form>
+        </a>
     </div>
 
     <!-- Use any element to open the sidenav -->
@@ -139,10 +143,9 @@
 
                     <div class="dropdown-container">
                         <div id="ai" class="form-check">
-                            <label class="form-check-label" for="defaultCheck1">
-                                <p>AUTO ASSIGN</p>
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <form style="display: grid; place-items: center;" method="post" action="/restaurant/auto_assign">
+                                <button style="border: solid silver; border-radius: 25px; background-color: #2dba9b; color: whitesmoke" type="submit"><i class="fab fa-android"></i> AUTO ASSIGN</button>
+                            </form>
                         </div>
                         <table>
                             <%for(let i = 0; i<ord.length; i++) {%>
