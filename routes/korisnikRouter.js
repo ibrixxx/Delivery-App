@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/authMiddleware');
+var nodemailer = require('nodemailer');
 var pg = require("pg");
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
@@ -13,6 +14,31 @@ var config = {
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 var pool = new pg.Pool(config);
+
+//radi kad se dopusti pristup
+//https://myaccount.google.com/lesssecureapps
+async function mainMail(email) {
+    // Only needed if you don't have a real mail account for testing
+    //let testAccount = await nodemailer.createTestAccount();
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'ponesidotcom@gmail.com',
+            pass: 'Matematika999+'
+        }
+    });
+
+    let info = await transporter.sendMail({
+        from: 'Ponesi.com <noreply.ponesidotcom@gmail.com>', // sender address
+        to: email, // list of receivers
+        subject: "Ponesi Order ✔", // Subject line
+        text: "Order is noted!", // plain text body
+        html: "<b>Hello world 👻</b>", // html body
+    });
+
+    //console.log("Message sent to: " + email);
+}
 
 /* GET home page. */
 router.get('/home', auth.userAuth,function(req, res, next) {
@@ -636,10 +662,12 @@ router.post('/order/article/:id/:re', auth.userAuth,function(req, res, next) {
     let placeno = false;
     if(r1)
         placeno = true;
+    let email;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         username = decodedToken.name;
         grad = decodedToken.city;
         id = decodedToken.id;
+        email = decodedToken.email;
     });
     pool.connect(function (err, client, done) {
         let artikal = req.params.id;
@@ -670,6 +698,7 @@ router.post('/order/article/:id/:re', auth.userAuth,function(req, res, next) {
                                     res.sendStatus(500);
                                 }
                                 else{
+                                    mainMail(email);
                                     res.redirect('/korisnik/home');
                                 }
                             });
@@ -751,10 +780,12 @@ router.post('/order/menu/:id/:re', auth.userAuth,function(req, res, next) {
     let placeno = false;
     if(r1)
         placeno = true;
+    let email;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         username = decodedToken.name;
         grad = decodedToken.city;
         id = decodedToken.id;
+        email = decodedToken.email;
     });
     pool.connect(function (err, client, done) {
         let menu = req.params.id;
@@ -773,6 +804,7 @@ router.post('/order/menu/:id/:re', auth.userAuth,function(req, res, next) {
                     console.log(err);
                     res.sendStatus(500);
                 } else {
+                    mainMail(email);
                     res.redirect('/korisnik/home');
                 }
             });
