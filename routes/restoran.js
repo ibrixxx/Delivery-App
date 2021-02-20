@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const auth = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+var nodemailer = require('nodemailer');
 var pg = require("pg");
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
@@ -13,6 +14,33 @@ var config = {
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 var pool = new pg.Pool(config);
+
+//radi kad se dopusti pristup
+//https://myaccount.google.com/lesssecureapps
+async function mainMail(email, today, month, deliv) {
+    // Only needed if you don't have a real mail account for testing
+    //let testAccount = await nodemailer.createTestAccount();
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'ponesidotcom@gmail.com',
+            pass: 'Matematika999+'
+        }
+    });
+
+    let info = await transporter.sendMail({
+        from: 'Ponesi.com <noreply.ponesidotcom@gmail.com>', // sender address
+        to: email, // list of receivers
+        subject: "Ponesi Order ✔", // Subject line
+        text: "Order is noted!", // plain text body
+        html: `<h1>Report</h1><p>#Orders today: <b>${today}</b></p>
+                <p>#Orders this month: ${month}</p>
+                <p>#Orders by dilivery person: ${JSON.stringify(deliv)}</p>`, // html body
+    });
+
+    //console.log("Message sent to: " + email);
+}
 
 
 router.get('/home', auth.restaurantAuth, function(req, res, next) {
@@ -458,6 +486,114 @@ router.post('/assign/order/:id/:dostavljac', auth.restaurantAuth, function(req, 
             });
     });
 });
+
+
+
+router.post('/report', auth.restaurantAuth, function(req, res, next) {
+    let restID;
+    let email;
+    const token = req.cookies.restoran;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        restID = decodedToken.id;
+        email = decodedToken.email;
+    });
+    pool.connect(function (err, client, done){
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`select count(*) as br from orders where restoran_id = $1 and datum = $2;`,
+            [restID, new Date()], function (err, result){
+                done();
+                if(err){
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                else{
+                    let ordToday = result.rows;
+                    pool.connect(function (err, client, done){
+                        if(err){
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client.query(`select count(*) as br from orders where restoran_id = $1 and extract(month from datum) = $2;`,
+                            [restID, new Date().getMonth()+1], function (err, result){
+                                done();
+                                if(err){
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                }
+                                else{
+                                    let ordMonth = result.rows;
+                                    console.log(ordMonth[0].br);
+                                    pool.connect(function (err, client, done){
+                                        if(err){
+                                            res.end('{"error":"Error","status":500 }');
+                                        }
+                                        client.query(`select o.dostavljac_id, d.prezime, count(*) as "orders taken" from orders o inner join dostavljac d on d.id = o.dostavljac_id 
+                                        where o.restoran_id = $1 and o.dostavljac_id is not null group by o.dostavljac_id, d.prezime;`,
+                                            [restID], function (err, result){
+                                                done();
+                                                if(err){
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                }
+                                                else{
+                                                    mainMail(email, ordToday[0].br, ordMonth[0].br, result.rows);
+                                                    res.redirect('/restaurant/home');
+                                                }
+                                            });
+                                    });
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
+
+router.post('/auto_assign', auth.restaurantAuth, function(req, res, next) {
+    let restID;
+    const token = req.cookies.restoran;
+    jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
+        restID = decodedToken.id;
+    });
+    pool.connect(function (err, client, done){
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`select id from orders where restoran_id = $1 and dostavljac_id is null;`,
+            [restID], function (err, result){
+                done();
+                if(err){
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                else{
+                    let prazno = result.rows;
+                    pool.connect(function (err, client, done){
+                        if(err){
+                            res.end('{"error":"Error","status":500 }');
+                        }
+                        client.query(`select id from dostavljac where aktivan = true and logovan = true;`,
+                            [restID], function (err, result){
+                                done();
+                                if(err){
+                                    console.log(err);
+                                    res.sendStatus(500);
+                                }
+                                else{
+                                    let dost = result.rows;
+                                    console.log('ts sšrs');
+                                }
+                            });
+                    });
+                }
+            });
+    });
+});
+
+
 
 
 
