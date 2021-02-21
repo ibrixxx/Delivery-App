@@ -97,7 +97,7 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
                                                         if(err){
                                                             res.end('{"error":"Error","status":500 }');
                                                         }
-                                                        client.query(`SELECT * FROM dostavljac WHERE logovan = true AND grad = $1;`,
+                                                        client.query(`SELECT * FROM dostavljac WHERE logovan = true AND aktivan = true AND grad = $1;`,
                                                             [grad], function (err, result){
                                                                 done();
                                                                 if(err){
@@ -201,7 +201,7 @@ router.post('/filter/map', auth.restaurantAuth, function(req, res, next) {
                                                         if(err){
                                                             res.end('{"error":"Error","status":500 }');
                                                         }
-                                                        client.query(`SELECT * FROM dostavljac WHERE logovan = true AND grad = $1;`,
+                                                        client.query(`SELECT * FROM dostavljac WHERE logovan = true AND aktivan = true AND grad = $1;`,
                                                             [grad], function (err, result){
                                                                 done();
                                                                 if(err){
@@ -554,9 +554,11 @@ router.post('/report', auth.restaurantAuth, function(req, res, next) {
 
 router.post('/auto_assign', auth.restaurantAuth, function(req, res, next) {
     let restID;
+    let grad;
     const token = req.cookies.restoran;
     jwt.verify(token, 'ibro super sicret', (err, decodedToken) => {
         restID = decodedToken.id;
+        grad = decodedToken.city;
     });
     pool.connect(function (err, client, done){
         if(err){
@@ -575,8 +577,8 @@ router.post('/auto_assign', auth.restaurantAuth, function(req, res, next) {
                         if(err){
                             res.end('{"error":"Error","status":500 }');
                         }
-                        client.query(`select id from dostavljac where aktivan = true and logovan = true;`,
-                            [restID], function (err, result){
+                        client.query(`select id from dostavljac where aktivan = true and logovan = true and grad = $1;`,
+                            [grad], function (err, result){
                                 done();
                                 if(err){
                                     console.log(err);
@@ -584,7 +586,29 @@ router.post('/auto_assign', auth.restaurantAuth, function(req, res, next) {
                                 }
                                 else{
                                     let dost = result.rows;
-                                    console.log('ts sšrs');
+                                    let a = dost.length;
+                                    for(let i = 0; i<prazno.length; i++) {
+                                        pool.connect(function (err, client, done){
+                                            if(err){
+                                                res.end('{"error":"Error","status":500 }');
+                                            }
+                                            client.query(`UPDATE orders SET dostavljac_id = $1 WHERE id = $2;`,
+                                                [dost[i%a].id, prazno[i].id], function (err, result){
+                                                    done();
+                                                    if(err){
+                                                        console.log(err);
+                                                        res.sendStatus(500);
+                                                    }
+                                                    else{
+                                                        console.log("dodano");
+                                                        //client.end();
+                                                        //pool.end();
+                                                        if(i == prazno.length-1)
+                                                            res.redirect('/restaurant/home');
+                                                    }
+                                                });
+                                        });
+                                    }
                                 }
                             });
                     });
