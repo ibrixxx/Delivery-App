@@ -43,7 +43,7 @@ router.get('/home', auth.deliveryAuth, function(req, res, next) {
         if (err) {
             res.end('{"error":"Error","status":500 }');
         }
-        client.query(`SELECT o.placeno, o.kvantitet, a.naziv as artNaziv, k.ime, k.prezime,
+        client.query(`SELECT o.id, o.placeno, o.kvantitet, a.naziv as artNaziv, k.ime, k.prezime,
                     k.adresa, k.sprat, r.naziv as resNaziv, a.cijena, a.cijena_akcija,
                      gm.naziv as menuNaziv, gm.cijena as cGm, gm.id as flag, k.latituda, k.longituda
                     FROM orders o
@@ -84,7 +84,7 @@ router.get('/home', auth.deliveryAuth, function(req, res, next) {
                                             })
                                         });
                                     }
-                                    let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                    const apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
                                     res.render('dostavljac', {key: apiKey, username: username, data: ord, dos: result.rows, ajdi: id, ime: ''});
                                 }
                             });
@@ -172,7 +172,7 @@ router.post('/confirm/order/:id',auth.deliveryAuth, function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    console.log("dodano");
+                    console.log("dodano prolsl");
                 }
             });
     });
@@ -194,7 +194,7 @@ router.post('/abort/order/:id', auth.deliveryAuth, function(req, res, next) {
                     res.sendStatus(500);
                 }
                 else{
-                    console.log("dodano");
+                    console.log("dodano abort");
                 }
             });
     });
