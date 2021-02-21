@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var pg = require("pg");
+var nodemailer = require('nodemailer');
 var config = {
     user: 'kdypkdwr', //env var: PGUSER
     database: 'kdypkdwr', //env var: PGDATABASE
@@ -11,6 +12,33 @@ var config = {
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 var pool = new pg.Pool(config);
+
+
+
+async function mainMail(data) {
+    // Only needed if you don't have a real mail account for testing
+    //let testAccount = await nodemailer.createTestAccount();
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'ponesidotcom@gmail.com',
+            pass: 'Matematika999+'
+        }
+    });
+
+    let info = await transporter.sendMail({
+        from: 'Ponesi.com <noreply.ponesidotcom@gmail.com>', // sender address
+        to: 'ibrahinmesan@gmail.com', // list of receivers
+        subject: "Ponesi Order ✔", // Subject line
+        text: "Order is noted!", // plain text body
+        html: `<h1>Report</h1>
+                <h3>Data by restaurant: ${JSON.stringify(data)}</h3>`, // html body
+    });
+
+    //console.log("Message sent to: " + email);
+}
+
 
 router.get('/', function(req, res, next) {
     let rest = {};
@@ -159,5 +187,30 @@ router.post('/addCity', function(req, res, next) {
             });
     });
 });
+
+
+router.post('/report', function(req, res, next) {
+    pool.connect(function (err, client, done){
+        if(err){
+            res.end('{"error":"Error","status":500 }');
+        }
+        client.query(`select o.restoran_id, r.naziv, count(*) as "number of orders", sum(a.cijena) as "profit (KM)" from orders o
+                    inner join artikli a on a.id = o.artikal_id
+                    inner join restoran r on o.restoran_id = r.id
+                    group by o.restoran_id, r.naziv order by "number of orders"`,
+            [], function (err, result){
+                done();
+                if(err){
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                else{
+                    mainMail(result.rows);
+                    res.redirect('/super/')
+                }
+            });
+    });
+});
+
 
 module.exports = router;
