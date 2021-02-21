@@ -143,9 +143,11 @@
 
                     <div class="dropdown-container">
                         <div id="ai" class="form-check">
+                            <%if(ord.length != 0) {%>
                             <form style="display: grid; place-items: center;" method="post" action="/restaurant/auto_assign">
                                 <button style="border: solid silver; border-radius: 25px; background-color: #2dba9b; color: whitesmoke" type="submit"><i class="fab fa-android"></i> AUTO ASSIGN</button>
                             </form>
+                            <%}%>
                         </div>
                         <table>
                             <%for(let i = 0; i<ord.length; i++) {%>
@@ -154,12 +156,13 @@
                                     <div class="card">
                                         <div class="jean">
                                             <%if(ord[i].artikal_id != 0) {%>
-                                            <h3>Article number: <%=ord[i].artikal_id%></h3>
+                                            <h6>Article number: <%=ord[i].artikal_id%></h6>
                                             <%}%>
                                             <%if(ord[i].artikal_id == 0) {%>
-                                            <h3>Menu number: <%=ord[i].menu_id%></h3>
+                                            <h6>Menu number: <%=ord[i].menu_id%></h6>
                                             <%}%>
                                             <p>Quantity: <%=ord[i].kvantitet%></p>
+                                            <p>Side note: <%=ord[i].napomena%></p>
                                         </div>
                                         <form class="form-inline">
                                             <label class="labell" for="inlineFormCustomSelectPref">Assign to</label>
