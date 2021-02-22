@@ -86,7 +86,7 @@ router.get('/home', auth.userAuth,function(req, res, next) {
                                             res.end('{"error":"Error","status":500 }');
                                         }
                                         client3.query(`SELECT g.naziv, g.artikli, g.id, g.cijena, r.id as re, g.img_data FROM grupni_meni g INNER JOIN restoran r on r.id = g.restoran_id
-                                         WHERE r.grad = $1 LIMIT 3;`,
+                                         WHERE r.grad = $1 and g.aktivan = true LIMIT 3;`,
                                             [grad], function (err, result){
                                                 done();
                                                 if(err){
