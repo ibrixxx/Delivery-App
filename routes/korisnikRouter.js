@@ -442,8 +442,8 @@ router.get('/history', auth.userAuth,function(req, res, next) {
                                             res.end('{"error":"Error","status":500 }');
                                         }
                                         client5.query(`SELECT a.id, a.naziv, a.sastojci, a.cijena, a.cijena_akcija, a.img_data, o.artikal_id
-                                         FROM artikli a, orders o WHERE o.artikal_id = a.id AND a.aktivan = true;`,
-                                            [], function (err, result){
+                                         FROM artikli a, orders o WHERE o.artikal_id = a.id AND a.aktivan = true AND o.korisnik_id = $1;`,
+                                            [id], function (err, result){
                                                 done();
                                                 if(err){
                                                     console.log(err);
