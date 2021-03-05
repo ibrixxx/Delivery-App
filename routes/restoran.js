@@ -123,7 +123,7 @@ router.get('/home', auth.restaurantAuth, function(req, res, next) {
                                                                                     res.sendStatus(500);
                                                                                 }
                                                                                 else{
-                                                                                    let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                                                                    let apiKey = "***";
                                                                                     let mapa = result.rows;
                                                                                     res.render('resAdmin', {key: apiKey, username: username, data: podaci, ctg: kat, ord: order, dos: dos, mapa: JSON.stringify(mapa), otv: false});
                                                                                 }
@@ -259,7 +259,7 @@ router.post('/filter/map', auth.restaurantAuth, function(req, res, next) {
                                                                                         console.log(err);
                                                                                         res.sendStatus(500);
                                                                                     } else {
-                                                                                        let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                                                                        let apiKey = "";
                                                                                         let mapa = result.rows;
                                                                                         console.log(mapa);
                                                                                         res.render('resAdmin', {
