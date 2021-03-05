@@ -25,7 +25,7 @@ async function mainMail(email, today, month, deliv) {
         service: 'gmail',
         auth: {
             user: 'ponesidotcom@gmail.com',
-            pass: 'Matematika999+'
+            pass: '***'
         }
     });
 
