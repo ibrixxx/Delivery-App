@@ -84,7 +84,7 @@ router.get('/home', auth.deliveryAuth, function(req, res, next) {
                                             })
                                         });
                                     }
-                                    const apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                    const apiKey = "***";
                                     res.render('dostavljac', {key: apiKey, username: username, data: ord, dos: result.rows, ajdi: id, ime: ''});
                                 }
                             });
@@ -146,7 +146,7 @@ router.get('/chat/:name', auth.deliveryAuth, function(req, res, next) {
                                             })
                                         });
                                     }
-                                    let apiKey = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDpYkaWmLinGl0jEtfNru5zUwbSJ9zgpbg&callback=initMap&libraries=&v=weekly";
+                                    let apiKey = "***";
                                     res.render('dostavljac', {key: apiKey, username: username, data: ord, dos: result.rows, ajdi: id, ime: ime_sagovornika});
                                 }
                             });
